@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import olap.api.SpatialOlapApi;
 import olap.api.SpatialOlapApiSingletonImpl;
-import olap.converter.MultiDimConverter;
 import olap.db.DBColumn;
+import olap.db.MultiDimMapper;
 import olap.db.SingleTable;
 import olap.model.MultiDim;
+import olap.model.TypeHelper;
 import olap.repository.TablesRepository;
 import olap.repository.impl.TablesDatabaseRepository;
 
@@ -33,10 +34,10 @@ public class CreateAutomaticOutput extends HttpServlet{
 		MultiDim multidim = api.getMultiDim("input.xml");
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		
-		List<MultiDimConverter> columnsInTable = new LinkedList<MultiDimConverter>();
+		List<MultiDimMapper> columnsInTable = new LinkedList<MultiDimMapper>();
 		
 		for(DBColumn col : multidimColumns) {
-			MultiDimConverter dic = new MultiDimConverter(col.getName(), null);
+			MultiDimMapper dic = new MultiDimMapper(col.getName(), null);
 			columnsInTable.add(dic);
 		}
 		
@@ -47,9 +48,6 @@ public class CreateAutomaticOutput extends HttpServlet{
 		
 		tablesRepository.createTable(table);
 		
-//		URL input = getClass().getClassLoader().getResource("input.xml");
-//		String inputPath = input.toString();
-//		String path = inputPath.substring(0, inputPath.lastIndexOf("/"));
 		api.generateOutput("geomondrian.xml", columnsInTable, multidim, tableName);
 		
 		req.setAttribute("message", "Listo!!");
@@ -59,31 +57,12 @@ public class CreateAutomaticOutput extends HttpServlet{
 	
 	private SingleTable createTable(String tableName, List<DBColumn> columns) {
 		List<DBColumn> tableColumns = new LinkedList<DBColumn>();
-		
 		for(DBColumn column : columns) {
-			String type = getType(column.getType());
+			String type = TypeHelper.toDBType(column.getType());
 			DBColumn tableColumn = new DBColumn(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
 			tableColumns.add(tableColumn);
 		}
-		
 		SingleTable table = new SingleTable(tableName, tableColumns);
 		return table;
 	}
-
-	private String getType(String type) {
-		if(type.equalsIgnoreCase("numeric")) {
-			return "numeric";
-		}
-		if(type.equalsIgnoreCase("string")) {
-			return "varchar(50)";
-		}
-		if(type.equalsIgnoreCase("timestamp")) {
-			return "timestamp";
-		}
-		if(type.equalsIgnoreCase("geometry")) {
-			return "geometry";
-		}
-		return "varchar(50)";
-	}
-
 }

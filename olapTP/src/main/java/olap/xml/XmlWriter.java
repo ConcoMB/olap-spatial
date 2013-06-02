@@ -12,7 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import olap.converter.MultiDimConverter;
+import olap.db.MultiDimMapper;
 import olap.model.Dimension;
 import olap.model.DimensionWrapper;
 import olap.model.Hierarchy;
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 public class XmlWriter {
 
-	public void write(String outputPath, List<MultiDimConverter> multidimToTables, MultiDim multidim, String tableName) {
+	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
 		Document document;
 		try {
 			document = DocumentBuilderFactory.newInstance()
@@ -121,7 +121,7 @@ public class XmlWriter {
 		}
 	}
 
-	private String getColumnName(List<MultiDimConverter> multidimToTables, String multidimName) {
+	private String getColumnName(List<MultiDimMapper> multidimToTables, String multidimName) {
 		return multidimName;
 //		for(MultiDimToTablesDictionary dic : multidimToTables) {
 //			if(dic.getMultidimName().equalsIgnoreCase(multidimName)) {
