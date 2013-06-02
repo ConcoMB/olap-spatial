@@ -10,7 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import olap.exceptions.XmlException;
+import olap.exception.XmlException;
 import olap.model.Dimension;
 import olap.model.DimensionWrapper;
 import olap.model.Hierarchy;
@@ -23,10 +23,11 @@ import olap.model.Property;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class XmlReader {
 
-	public static Document read(String xml) throws org.xml.sax.SAXException,
+	public static Document read(String xml) throws SAXException,
 			IOException, ParserConfigurationException {
 		return read(new ByteArrayInputStream(xml.getBytes()));
 	}
@@ -34,50 +35,14 @@ public class XmlReader {
 	public static Document read(InputStream is)
 			throws org.xml.sax.SAXException, java.io.IOException,
 			ParserConfigurationException {
-		javax.xml.parsers.DocumentBuilderFactory factory = DocumentBuilderFactory
+		DocumentBuilderFactory factory = DocumentBuilderFactory
 				.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder = null;
 		builder = factory.newDocumentBuilder();
-		org.w3c.dom.Document doc = builder.parse(is);
+		Document doc = builder.parse(is);
 		is.close();
 		return doc;
-	}
-
-	public MultiDim readMultiDim(String inputPath) {
-		File input = new File(inputPath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder;
-		Document doc;
-		MultiDim multidim = new MultiDim();
-		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(input);
-			Node root = doc.getElementsByTagName("multidim").item(0);
-			NodeList children = root.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-				Node first = children.item(i);
-				if (first.getNodeType() == Node.ELEMENT_NODE
-						&& first.getNodeName().equals("dimension")) {
-					Dimension dim = this.getDimension(first);
-					multidim.addDimension(dim);
-				} else if (first.getNodeType() == Node.ELEMENT_NODE
-						&& first.getNodeName().equals("cubo")) {
-					OlapCube cubo = this.readOlapCube(first);
-					multidim.addCubo(cubo);
-				}
-			}
-			for (OlapCube olapCube : multidim.getOlapCubes()) {
-				List<Dimension> dims = multidim.getDimensions();
-				for (DimensionWrapper dimUsage : olapCube.getDimensionUsage()) {
-					dimUsage.setDimension(this.readDimension(dimUsage.getPtr(),
-							dims));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return multidim;
 	}
 
 	public Dimension getDimension(Node node) {
@@ -209,9 +174,46 @@ public class XmlReader {
 		return du;
 	}
 
+	public MultiDim readMultiDim(String in) {
+		File input = new File(in);
+		DocumentBuilder dBuilder;
+		Document doc;
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		MultiDim multidim = new MultiDim();
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+			doc = dBuilder.parse(input);
+			Node root = doc.getElementsByTagName("multidim").item(0);
+			NodeList children = root.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+				Node first = children.item(i);
+				if (first.getNodeType() == Node.ELEMENT_NODE
+						&& first.getNodeName().equals("dimension")) {
+					Dimension dim = getDimension(first);
+					multidim.addDimension(dim);
+				} else if (first.getNodeType() == Node.ELEMENT_NODE
+						&& first.getNodeName().equals("cubo")) {
+					OlapCube olapCube = readOlapCube(first);
+					multidim.addOlapCube(olapCube);
+				}
+			}
+			for (OlapCube olapCube : multidim.getOlapCubes()) {
+				List<Dimension> dims = multidim.getDimensions();
+				for (DimensionWrapper dimW : olapCube.getDimensionUsage()) {
+					dimW.setDimension(this.readDimension(dimW.getPtr(),
+							dims));
+				}
+			}
+		} catch (Exception e) {
+			throw new XmlException(e.getMessage());
+		}
+		return multidim;
+	}
+
 	private Dimension readDimension(String ptr, List<Dimension> dims) {
+		ptr = ptr.toLowerCase();
 		for (Dimension dim : dims) {
-			if (dim.getName().compareToIgnoreCase(ptr) == 0) {
+			if (dim.getName().toLowerCase().compareTo(ptr) == 0) {
 				return dim;
 			}
 		}

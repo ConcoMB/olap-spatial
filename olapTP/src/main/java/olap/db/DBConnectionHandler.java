@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import olap.exceptions.DBException;
+import olap.exception.DBException;
 
 public class DBConnectionHandler {
 

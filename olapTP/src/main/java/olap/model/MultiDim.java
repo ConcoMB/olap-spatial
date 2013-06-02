@@ -21,9 +21,6 @@ public class MultiDim {
 		dimensions.add(dim);
 	}
 
-	public void addCubo(OlapCube cubo) {
-		olapCubes.add(cubo);
-	}
 
 	public List<Dimension> getDimensions() {
 		return dimensions;
@@ -39,6 +36,10 @@ public class MultiDim {
 			columns.addAll(c.getColumns());
 		}
 		return columns;
+	}
+
+	public void addOlapCube(OlapCube cubo) {
+		olapCubes.add(cubo);
 	}
 
 	public List<String> getMultiDimNames(){
