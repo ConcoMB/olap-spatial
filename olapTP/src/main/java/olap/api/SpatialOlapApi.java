@@ -7,7 +7,7 @@ import olap.model.MultiDim;
 
 public interface SpatialOlapApi {
 
-	public MultiDim getMultiDim(String filePath);
+	public MultiDim read(String filePath);
 	
-	public void generateOutput(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName);
+	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName);
 }

@@ -31,7 +31,7 @@ public class CreateAutomaticOutput extends HttpServlet{
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
 		
-		MultiDim multidim = api.getMultiDim("input.xml");
+		MultiDim multidim = api.read("input.xml");
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		
 		List<MultiDimMapper> columnsInTable = new LinkedList<MultiDimMapper>();
@@ -48,7 +48,7 @@ public class CreateAutomaticOutput extends HttpServlet{
 		
 		tablesRepository.create(table);
 		
-		api.generateOutput("geomondrian.xml", columnsInTable, multidim, tableName);
+		api.write("geomondrian.xml", columnsInTable, multidim, tableName);
 		
 		req.setAttribute("message", "Listo!!");
 		

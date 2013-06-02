@@ -39,7 +39,7 @@ public class SelectColumns extends HttpServlet{
 		req.setAttribute("message", "Columnas de la tabla " + uniqueTable);
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
-		MultiDim multidim = api.getMultiDim("input.xml");
+		MultiDim multidim = api.read("input.xml");
 		
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		
