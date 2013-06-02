@@ -1,26 +1,32 @@
 <%@ include file="header.jsp"%>
 <div class="well-large well">
-<h2>Select the columns from the table <c:out value="${uniqueTable}" /></h2>
+<h2>Select a columns from the table to match multiDim columns <c:out value="${uniqueTable}" /></h2>
 <p><c:out value="${message}" /></p>
-	<form class="form-horizontal" action="manageSelectedColumns" method="POST">
+<table class="table table-hover">
+	<tr><th>C</th><th></th></tr>
+	<form action="manageSelectedColumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:forEach items="${multidimColumns}" var="multidimColumn">
-				<div class="control-group">
-					<label class="control-label"><c:out value="${multidimColumn.name}" />:</label>
-					</br>
-					<div class="controls">
-					<select name="${multidimColumn.name}">
-						<c:forEach items="${columns}" var="column">
-							<option value="${column.name}"><c:out value="${column.name}" />
-						</c:forEach>
-					</select>
-				</div>
-				</div>
-				</br>
+				<tr>
+					<td>
+					<c:out value="${multidimColumn.name}" />:
+					</td>
+					<td>
+						<select name="${multidimColumn.name}">
+							<c:forEach items="${columns}" var="column">
+								<c:if test="${column.name.equalsIgnoreCase(multidimColumn.name)}">
+								<% selected="selected"%>
+							</c:if>
+								<option value="${column.name}" <%= selected%>><c:out value="${column.name}" />
+							</c:forEach>
+						</select>
+					</td>
+				</tr>
 			</c:forEach>
 			
 				<input class="btn btn-primary" type="submit" value="Aceptar" />
 		</fieldset>
 	</form>
+</table>
 </div>
 <%@ include file="footer.jsp"%>
