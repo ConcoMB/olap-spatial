@@ -1,0 +1,119 @@
+@CHARSET "UTF-8";
+
+body {
+    background-color: #C9D3E2;
+}
+
+#marcoLogin{
+	 width: 600px;
+}
+
+#content{
+	width: 600px;
+	margin: 10px 10px 30px 10px;	
+}
+
+#logo{
+	float:left;	
+}
+/*Formularios*/
+form fieldset {
+  margin-bottom: 20px;
+}
+form label {
+  display: inline-block;	
+  line-height: 1.5;
+  vertical-align: top;
+}
+form fieldset fieldset {
+  border: none;
+  margin: 3px 0 0;
+}
+form fieldset fieldset label {
+  display: block;
+  width: auto;
+}
+form em {
+  font-weight: bold;
+  font-style: normal;
+  color: #f00;
+}
+#em {
+  font-weight: bold;
+  font-style: normal;
+  color: #f00;
+}
+form label {
+  width: 120px; /* Width of labels */
+}
+
+/*Barra navegador*/
+#navegador{
+	margin: 10px 10px 40px 10px;
+}
+
+#navegador ul{
+   list-style-type: none;
+   text-align: center;
+}
+#navegador li{
+   display: inline;
+   text-align: center;
+   margin: 0 10px 0 0;
+}
+#navegador li a {
+   padding: 2px 7px 2px 7px;
+   color: #666;
+   background-color: #eeeeee;
+   border: 1px solid #ccc;
+   text-decoration: none;
+}
+#navegador li a:hover{
+   background-color: #333333;
+   color: #ffffff;
+}
+
+#navegador {
+	background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #CCCCCC;
+    padding-bottom: 1px;
+    padding-top: 1px;
+}
+
+#user_logged{
+	float:right;
+	margin-right: 50px;
+    margin-top: -10px;	
+}
+
+/*Tablas*/
+#list tr {
+    height: 20px;
+}
+#list th, td, td a {
+/*     font-size: 13px; */
+    padding: 2px;
+    vertical-align: top;
+}
+#list td a {
+/*     color: #FFCC00; */
+}
+#list td a:hover {
+    text-decoration: none;
+}
+#list th {
+    background: url("http://www.frogx3.com/ejemplos/images/text-bg.gif") repeat-x scroll 0 0 #FFFFFF;
+    border-bottom: 3px double #F2F2F2;
+    border-right: 3px double #F2F2F2;
+    line-height: 20px;
+}
+#list td {
+    border-bottom: 1px solid #F2F2F2;
+    border-right: 1px solid #F2F2F2;
+    line-height: 20px;
+}
+
+ul.list {
+	list-style-type:decimal;
+}
+
