@@ -10,45 +10,24 @@ import olap.db.DBColumn;
 import olap.db.DBConnectionHandler;
 import olap.db.SingleTable;
 import olap.exception.DBException;
-import olap.repository.TablesRepository;
+import olap.repository.TableRepository;
 
-public class TablesDatabaseRepository implements TablesRepository {
+public class TableDatabaseRepository implements TableRepository {
 
-	private static TablesRepository tablesRepo;
+	private static TableRepository tablesRepo;
 
-	public static synchronized TablesRepository getInstance() {
+	public static synchronized TableRepository getInstance() {
 		if (tablesRepo == null)
-			tablesRepo = new TablesDatabaseRepository();
+			tablesRepo = new TableDatabaseRepository();
 		return tablesRepo;
 	}
 
 	@Override
-	public List<String> getTables() {
-		Connection c = getConnection();
-		PreparedStatement stmt;
-		List<String> tables = new LinkedList<String>();
-		try {
-			stmt = c.prepareStatement("select * from information_schema.tables where " +
-					"table_type = 'BASE TABLE' and table_schema = 'public' and" +
-					" table_name != 'spatial_ref_sys'");
-			ResultSet cur = stmt.executeQuery();
-			while (cur.next()) {
-				tables.add(cur.getString("table_name"));
-			}
-			closeConnection();
-		} catch (Exception e) {
-			throw new DBException(e.getMessage());
-		}
-		closeConnection();
-		return tables;
-	}
-
-	@Override
-	public void createTable(SingleTable table) {
+	public void create(SingleTable table) {
 		Connection c = getConnection();
 		PreparedStatement stmt;
 		try {
-			stmt = c.prepareStatement(this.getQueryForTableCreation(table));
+			stmt = c.prepareStatement(createTableQuery(table));
 			stmt.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +37,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	}
 
 	@Override
-	public void executeQuery(String query) {
+	public void execute(String query) {
 		Connection c = getConnection();
 		PreparedStatement stmt;
 		try {
@@ -71,7 +50,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	}
 
 	@Override
-	public List<String> getTableColumsNames(String tableName) {
+	public List<String> columsNames(String tableName) {
 		Connection c = getConnection();
 		PreparedStatement stmt;
 		List<String> cols = new LinkedList<String>();
@@ -93,7 +72,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	}
 
 	@Override
-	public List<DBColumn> getTableColums(String tableName) {
+	public List<DBColumn> columns(String tableName) {
 		Connection c = getConnection();
 		PreparedStatement stmt;
 		List<DBColumn> cols = new LinkedList<DBColumn>();
@@ -116,43 +95,55 @@ public class TablesDatabaseRepository implements TablesRepository {
 		return cols;
 	}
 
-	private String getQueryForTableCreation(SingleTable t) {
-		StringBuffer query = new StringBuffer();
-		query.append("CREATE TABLE ");
-		query.append(t.getName());
-		query.append("(");
-		StringBuffer primaryKeys = new StringBuffer();
-		primaryKeys.append(",PRIMARY KEY(");
+	@Override
+	public List<String> get() {
+		Connection c = getConnection();
+		PreparedStatement stmt;
+		List<String> tables = new LinkedList<String>();
+		try {
+			stmt = c.prepareStatement("select * from information_schema.tables where " +
+					"table_type = 'BASE TABLE' and table_schema = 'public' and" +
+					" table_name != 'spatial_ref_sys'");
+			ResultSet cur = stmt.executeQuery();
+			while (cur.next()) {
+				tables.add(cur.getString("table_name"));
+			}
+			closeConnection();
+		} catch (Exception e) {
+			throw new DBException(e.getMessage());
+		}
+		closeConnection();
+		return tables;
+	}
+	
+	private String createTableQuery(SingleTable t) {
+		StringBuffer query = new StringBuffer("CREATE TABLE " + t.getName() + "(");
+		StringBuffer primaryKeys = new StringBuffer(",PRIMARY KEY(");
 		List<DBColumn> columns = t.getColumns();
 		int i = 1;
-		boolean thereIsAPrimaryKey = false;
+		boolean PKFound = false;
 		for (DBColumn column : columns) {
-			query.append(column.getName());
-			query.append(" ");
-			query.append(column.getType());
+			query.append(column.getName() + " " + column.getType());
 			if (column.isNotNull()) {
-				query.append(" ");
-				query.append("NOT NULL");
+				query.append(" NOT NULL");
 			}
 			if (column.isPrimaryKey()) {
-				thereIsAPrimaryKey = true;
-				primaryKeys.append(column.getName());
-				primaryKeys.append(",");
+				PKFound = true;
+				primaryKeys.append(column.getName() + ",");
 			}
 			if (i != columns.size()) {
 				query.append(",");
 			}
 			i++;
 		}
-		if (thereIsAPrimaryKey) {
+		if (PKFound) {
 			String pks = primaryKeys.substring(0, primaryKeys.length() - 1);
-			query.append(pks);
-			query.append(")");
+			query.append(pks + ")");
 		}
 		query.append(");");
 		return query.toString();
 	}
-
+	
 	private Connection getConnection() {
 		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		return manager.get();

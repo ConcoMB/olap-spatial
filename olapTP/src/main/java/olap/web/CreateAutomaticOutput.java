@@ -16,8 +16,8 @@ import olap.db.MultiDimMapper;
 import olap.db.SingleTable;
 import olap.model.MultiDim;
 import olap.model.TypeHelper;
-import olap.repository.TablesRepository;
-import olap.repository.impl.TablesDatabaseRepository;
+import olap.repository.TableRepository;
+import olap.repository.impl.TableDatabaseRepository;
 
 @SuppressWarnings("serial")
 public class CreateAutomaticOutput extends HttpServlet{
@@ -27,7 +27,7 @@ public class CreateAutomaticOutput extends HttpServlet{
 	}
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		TablesRepository tablesRepository = TablesDatabaseRepository.getInstance();
+		TableRepository tablesRepository = TableDatabaseRepository.getInstance();
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
 		
@@ -46,7 +46,7 @@ public class CreateAutomaticOutput extends HttpServlet{
 		String tableName = multidim.getOlapCubes().get(0).getName();
 		SingleTable table = createTable(tableName, multidimColumns);
 		
-		tablesRepository.createTable(table);
+		tablesRepository.create(table);
 		
 		api.generateOutput("geomondrian.xml", columnsInTable, multidim, tableName);
 		
