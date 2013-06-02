@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import olap.model.SpatialOlapApi;
-import olap.model.SpatialOlapApiImpl;
-import olap.model.DBColumn;
+import olap.api.SpatialOlapApi;
+import olap.api.SpatialOlapApiSingletonImpl;
+import olap.db.DBColumn;
+import olap.db.MultiDimMapper;
+import olap.db.SingleTable;
 import olap.model.MultiDim;
-import olap.model.MultiDimConverter;
-import olap.model.MultiDimConverterDummy;
-import olap.model.SingleTable;
+import olap.model.TypeHelper;
 import olap.repository.TablesRepository;
 import olap.repository.impl.TablesDatabaseRepository;
 
@@ -27,64 +27,42 @@ public class CreateAutomaticOutput extends HttpServlet{
 	}
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		TablesRepository tablesDAO = TablesDatabaseRepository.getInstance();
+		TablesRepository tablesRepository = TablesDatabaseRepository.getInstance();
 		
-		SpatialOlapApi api = SpatialOlapApiImpl.getInstance();
+		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
 		
 		MultiDim multidim = api.getMultiDim("input.xml");
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		
-		List<MultiDimConverter> columnsInTable = new LinkedList<MultiDimConverter>();
+		List<MultiDimMapper> columnsInTable = new LinkedList<MultiDimMapper>();
 		
-		for(DBColumn multidimColumn : multidimColumns) {
-			MultiDimConverterDummy dic = new MultiDimConverterDummy(multidimColumn.getName());
+		for(DBColumn col : multidimColumns) {
+			MultiDimMapper dic = new MultiDimMapper(col.getName(), null);
 			columnsInTable.add(dic);
 		}
 		
 		req.setAttribute("columnsInTable", columnsInTable);
 		
-		String tableName = multidim.getCubos().get(0).getName();
+		String tableName = multidim.getOlapCubes().get(0).getName();
 		SingleTable table = createTable(tableName, multidimColumns);
 		
-		tablesDAO.createTable(table);
+		tablesRepository.createTable(table);
 		
-//		URL input = getClass().getClassLoader().getResource("input.xml");
-//		String inputPath = input.toString();
-//		String path = inputPath.substring(0, inputPath.lastIndexOf("/"));
 		api.generateOutput("geomondrian.xml", columnsInTable, multidim, tableName);
 		
-		req.setAttribute("message", "Su archivo está listo");
+		req.setAttribute("message", "Listo!!");
 		
 		req.getRequestDispatcher("/WEB-INF/jsp/manageSelectedColumns.jsp").forward(req, resp);
 	}
 	
 	private SingleTable createTable(String tableName, List<DBColumn> columns) {
 		List<DBColumn> tableColumns = new LinkedList<DBColumn>();
-		
 		for(DBColumn column : columns) {
-			String type = getType(column.getType());
+			String type = TypeHelper.toDBType(column.getType());
 			DBColumn tableColumn = new DBColumn(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
 			tableColumns.add(tableColumn);
 		}
-		
 		SingleTable table = new SingleTable(tableName, tableColumns);
 		return table;
 	}
-
-	private String getType(String type) {
-		if(type.equalsIgnoreCase("numeric")) {
-			return "numeric";
-		}
-		if(type.equalsIgnoreCase("string")) {
-			return "varchar(50)";
-		}
-		if(type.equalsIgnoreCase("timestamp")) {
-			return "timestamp";
-		}
-		if(type.equalsIgnoreCase("geometry")) {
-			return "geometry";
-		}
-		return "varchar(50)";
-	}
-
 }

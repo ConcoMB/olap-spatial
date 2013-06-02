@@ -1,5 +1,7 @@
 package olap.model;
 
+import olap.db.DBColumn;
+
 public class Measure {
 
 	private String name, type, agg;
@@ -38,7 +40,6 @@ public class Measure {
 		return agg;
 	}
 
-	
 	public String toString(){
 		return "MEDIDA:\n\t nombre = " + name + "; tipo = " + type + "; agg = " + agg + "\n";
 	}

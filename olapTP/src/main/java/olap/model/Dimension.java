@@ -3,23 +3,24 @@ package olap.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import olap.db.DBColumn;
+
 public class Dimension {
 
 	private String name;
-	private List<Hierarchy> hierachies = new LinkedList<Hierarchy>();
+	private List<Hierarchy> hierarchies = new LinkedList<Hierarchy>();
 	private List<Level> levels = new LinkedList<Level>();
-	
 	
 	public Dimension(String name){
 		this.name = name;
 	}
 	
-	public void addHierachy(Hierarchy h){
-		hierachies.add(h);
+	public void addHierarchy(Hierarchy h){
+		hierarchies.add(h);
 	}
 	
-	public List<Hierarchy> getHierachies(){
-		return this.hierachies;
+	public List<Hierarchy> getHierarchies(){
+		return this.hierarchies;
 	}
 	
 	public List<Level> getLevels(){
@@ -34,26 +35,12 @@ public class Dimension {
 		return this.name;
 	}
 	
-	public String toString(){
-		String string = "\n" + "DIMENSION: name: "+name+"\n";
-		string = string.concat("Dimension's levelsList:" + "\n");
-		for (Level p : levels) {
-			string = string.concat(p.toString() + "\n");
-		}
-		string = string.concat("hierachiesList:" + "\n");
-		for (Hierarchy p : hierachies) {
-			string = string.concat(p.toString() + "\n");
-		}
-		
-		return string  + "\n";
-	}
-	
 	public List<String> getColumnNames(String cuboName){
 		List<String> columns = new LinkedList<String>();
 		for(Level l: levels){
 			columns.addAll(l.getColumnNames(cuboName));			
 		}
-		for(Hierarchy h:hierachies){
+		for(Hierarchy h:hierarchies){
 			columns.addAll(h.getColumnNames(cuboName));
 		}		
 		return columns;
@@ -64,9 +51,22 @@ public class Dimension {
 		for(Level l: levels){
 			columns.addAll(l.getCols(before));
 		}
-		for(Hierarchy h: hierachies){
+		for(Hierarchy h: hierarchies){
 			columns.addAll(h.getColumns(before));
 		}
 		return columns;
+	}
+	
+	public String toString(){
+		StringBuffer s = new StringBuffer("\n" + "DIMENSION: name: "+name+"\n");
+		s = s.append("niveles: \n");
+		for (Level p : levels) {
+			s = s.append(p.toString() + "\n");
+		}
+		s = s.append("jerarquias:" + "\n");
+		for (Hierarchy p : hierarchies) {
+			s = s.append(p.toString() + "\n");
+		}
+		return s  + "\n";
 	}
 }

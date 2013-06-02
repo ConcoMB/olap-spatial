@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import olap.db.DBColumn;
+
 public class MultiDim {
 
 	private List<Dimension> dimensions;
@@ -19,28 +21,13 @@ public class MultiDim {
 		dimensions.add(dim);
 	}
 
-	public void addCubo(OlapCube cubo) {
-		olapCubes.add(cubo);
-	}
 
 	public List<Dimension> getDimensions() {
 		return dimensions;
 	}
 
-	public List<OlapCube> getCubos() {
+	public List<OlapCube> getOlapCubes() {
 		return olapCubes;
-	}
-
-	public String toString() {
-		StringBuffer string = new StringBuffer("MULTI DIM:\n Dimensiones = \n");
-		for (Dimension p : dimensions) {
-			string = string.append(p.toString());
-		}
-		string = string.append("CUBOS:" + "\n");
-		for (OlapCube p : olapCubes) {
-			string = string.append(p.toString());
-		}
-		return string + "\n";
 	}
 
 	public List<DBColumn> getColumns(){
@@ -49,6 +36,10 @@ public class MultiDim {
 			columns.addAll(c.getColumns());
 		}
 		return columns;
+	}
+
+	public void addOlapCube(OlapCube cubo) {
+		olapCubes.add(cubo);
 	}
 
 	public List<String> getMultiDimNames(){
@@ -63,5 +54,17 @@ public class MultiDim {
 			columns.addAll(names);
 		}
 		return columns;
+	}
+	
+	public String toString() {
+		StringBuffer string = new StringBuffer("MULTI DIM:\n Dimensiones = \n");
+		for (Dimension p : dimensions) {
+			string = string.append(p.toString());
+		}
+		string = string.append("CUBOS:" + "\n");
+		for (OlapCube p : olapCubes) {
+			string = string.append(p.toString());
+		}
+		return string + "\n";
 	}
 }

@@ -8,8 +8,25 @@
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="css/chosen.css" />
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
+<script src="js/chosen.jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("select").chosen();
+});
+</script>
 </head>
 <body>
+	<div class="navbar container">
+	    <div class="navbar-inner">
+	    <a class="brand" href="#">OLAP SingleTable</a>
+	    <ul class="nav">
+	    <li class="active"><a href="/">Home</a></li>
+	    </ul>
+	    </div>
+	</div>
+	<div class="container">
 	
-	<h1>OLAP</h1>

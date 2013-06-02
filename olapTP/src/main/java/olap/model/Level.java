@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import olap.db.DBColumn;
+
 public class Level implements Comparator<Level>, Comparable<Level>{
 
 	private String name, type;

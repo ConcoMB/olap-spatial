@@ -1,11 +1,11 @@
 <%@ include file="header.jsp"%>
-<div id="content">
-<h2>Seleccione la tabla con la que desea trabajar</h2>
+<div class="well well-large">
+<h2>Select the table</h2>
 <p><c:out value="${message}" /></p>
 	<form action="selectColumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:if test="${tables == null}">
-				<h3>No existe ninguna tabla en la base de datos proporcionada</h3>
+				<h3>No databases</h3>
 			</c:if>
 			<c:if test="${tables != null}">
 				<form action="selectColumns" method="POST">
@@ -19,7 +19,7 @@
 							</tr>
 							<br/>
 							<tr>
-								<td><input type="submit" value="Aceptar" /></td>
+								<td><input class="btn btn-primary" type="submit" value="Accept" /></td>
 							</tr>
 						</table>
 				</form>

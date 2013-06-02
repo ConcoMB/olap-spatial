@@ -3,12 +3,14 @@ package olap.model;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DimensionUsage {
+import olap.db.DBColumn;
+
+public class DimensionWrapper {
 	
 	private String name, ptr;
 	private Dimension dimension;
 	
-	public DimensionUsage(String name, String ptr){
+	public DimensionWrapper(String name, String ptr){
 		this.name = name;
 		this.ptr = ptr;
 	}
@@ -44,6 +46,6 @@ public class DimensionUsage {
 	}
 	
 	public String toString(){
-		return "DIMENSION_USAGE:\n\tnombre = " + name + "; ptr = " + ptr + "; dimension = " + dimension + "\n";
+		return "DIMENSION_W:\n\tnombre = " + name + "; ptr = " + ptr + "; dimension = " + dimension + "\n";
 	}
 }

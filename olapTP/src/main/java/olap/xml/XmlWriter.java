@@ -12,13 +12,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import olap.db.MultiDimMapper;
 import olap.model.Dimension;
-import olap.model.DimensionUsage;
+import olap.model.DimensionWrapper;
 import olap.model.Hierarchy;
 import olap.model.Level;
 import olap.model.Measure;
 import olap.model.MultiDim;
-import olap.model.MultiDimConverter;
 import olap.model.OlapCube;
 import olap.model.Property;
 
@@ -27,26 +27,26 @@ import org.w3c.dom.Element;
 
 public class XmlWriter {
 
-	public void write(String outputPath, List<MultiDimConverter> multidimToTables, MultiDim multidim, String tableName) {
+	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
 		Document document;
 		try {
 			document = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder().newDocument();
 			Element schema = document.createElement("Schema");
 			schema.setAttribute("name", tableName);
-			for(OlapCube cubo: multidim.getCubos()){
+			for(OlapCube cubo: multidim.getOlapCubes()){
 				Element cuboElement = document.createElement("Cube");
 				cuboElement.setAttribute("name", cubo.getName());
 				Element tableElement = document.createElement("Table");
 				tableElement.setAttribute("name", tableName);
 				cuboElement.appendChild(tableElement);
-				List<DimensionUsage> dimUsages = cubo.getDimensionUsage();
+				List<DimensionWrapper> dimUsages = cubo.getDimensionUsage();
 				for(int i = 0; i < dimUsages.size(); i++){
-					DimensionUsage dimUsage = dimUsages.get(i);
+					DimensionWrapper dimUsage = dimUsages.get(i);
 					Dimension dim = dimUsage.getDimension();
 					Element dimElement = document.createElement("Dimension");
 					dimElement.setAttribute("name", dimUsage.getName());
-					for(Hierarchy hierarchy : dim.getHierachies()){
+					for(Hierarchy hierarchy : dim.getHierarchies()){
 						Element hierarchyElement = document.createElement("Hierarchy");
 						hierarchyElement.setAttribute("name", hierarchy.getName());
 						hierarchyElement.setAttribute("hasAll", "true");
@@ -121,7 +121,7 @@ public class XmlWriter {
 		}
 	}
 
-	private String getColumnName(List<MultiDimConverter> multidimToTables, String multidimName) {
+	private String getColumnName(List<MultiDimMapper> multidimToTables, String multidimName) {
 		return multidimName;
 //		for(MultiDimToTablesDictionary dic : multidimToTables) {
 //			if(dic.getMultidimName().equalsIgnoreCase(multidimName)) {

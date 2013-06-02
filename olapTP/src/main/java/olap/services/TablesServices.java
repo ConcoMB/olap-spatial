@@ -2,8 +2,8 @@ package olap.services;
 
 import java.util.List;
 
-import olap.model.DBColumn;
-import olap.model.SingleTable;
+import olap.db.DBColumn;
+import olap.db.SingleTable;
 
 public interface TablesServices {
 

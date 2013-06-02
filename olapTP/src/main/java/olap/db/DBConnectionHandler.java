@@ -1,4 +1,4 @@
-package olap.model;
+package olap.db;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,24 +6,23 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import olap.exceptions.DatabaseException;
+import olap.exception.DBException;
 
 public class DBConnectionHandler {
 
-	private static DBConnectionHandler instance;
-
+	private static DBConnectionHandler handler;
 	private String username, password, connectionString;
 	private Connection connection;
 
 	public static synchronized DBConnectionHandler getInstance() {
-		if (instance == null) {
-			instance = new DBConnectionHandler();
-			instance.loadParameters();
+		if (handler == null) {
+			handler = new DBConnectionHandler();
+			handler.load();
 		}
-		return instance;
+		return handler;
 	}
 
-	private void loadParameters() {
+	private void load() {
 		Properties properties = new Properties();
 		try {
 			properties.load(getClass().getClassLoader().getResourceAsStream(
@@ -32,27 +31,27 @@ public class DBConnectionHandler {
 			password = properties.getProperty("password");
 			connectionString = properties.getProperty("connectionString");
 		} catch (IOException e) {
-			throw new DatabaseException(e.getMessage());
+			throw new DBException(e.getMessage());
 		}
 	}
 
-	public Connection getConnection() {
+	public Connection get() {
 		try {
 			connection = DriverManager.getConnection(connectionString,
 					username, password);
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
+			throw new DBException(e.getMessage());
 		}
 		return connection;
 	}
 
-	public void closeConnection() {
+	public void close() {
 		try {
 			connection.commit();
 			connection.close();
 		} catch (Exception e) {
-			throw new DatabaseException(e.getMessage());
+			throw new DBException(e.getMessage());
 		}
 	}
 }

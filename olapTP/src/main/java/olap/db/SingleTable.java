@@ -1,6 +1,7 @@
-package olap.model;
+package olap.db;
 
 import java.util.List;
+
 
 public class SingleTable {
 	
