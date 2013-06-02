@@ -49,5 +49,4 @@ public class SelectColumns extends HttpServlet{
 
 		req.getRequestDispatcher("/WEB-INF/jsp/selectColumns.jsp").forward(req, resp);
 	}
-
 }

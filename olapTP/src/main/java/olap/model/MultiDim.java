@@ -29,20 +29,8 @@ public class MultiDim {
 		return dimensions;
 	}
 
-	public List<OlapCube> getCubos() {
+	public List<OlapCube> getOlapCubes() {
 		return olapCubes;
-	}
-
-	public String toString() {
-		StringBuffer string = new StringBuffer("MULTI DIM:\n Dimensiones = \n");
-		for (Dimension p : dimensions) {
-			string = string.append(p.toString());
-		}
-		string = string.append("CUBOS:" + "\n");
-		for (OlapCube p : olapCubes) {
-			string = string.append(p.toString());
-		}
-		return string + "\n";
 	}
 
 	public List<DBColumn> getColumns(){
@@ -65,5 +53,17 @@ public class MultiDim {
 			columns.addAll(names);
 		}
 		return columns;
+	}
+	
+	public String toString() {
+		StringBuffer string = new StringBuffer("MULTI DIM:\n Dimensiones = \n");
+		for (Dimension p : dimensions) {
+			string = string.append(p.toString());
+		}
+		string = string.append("CUBOS:" + "\n");
+		for (OlapCube p : olapCubes) {
+			string = string.append(p.toString());
+		}
+		return string + "\n";
 	}
 }
