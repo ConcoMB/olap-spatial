@@ -1,18 +1,17 @@
-package olap.domain;
+package olap.model;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Hierachy {
+public class Hierarchy {
 
 	private String name;
-	private SortedSet<Level> levels;
+	private SortedSet<Level> levels = new TreeSet<Level>();
 	
-	public Hierachy(String name){
+	public Hierarchy(String name){
 		this.name = name;
-		this.levels = new TreeSet<Level>() ;
 	}
 	
 	public SortedSet<Level> getLevels(){
@@ -27,15 +26,6 @@ public class Hierachy {
 		return this.name;
 	}
 	
-	public String toString(){
-		String string = "HIERACHY:name: "+name+ "\n";
-		string = string.concat("levels:" + "\n");
-		for (Level p : levels) {
-			string = string.concat(p.toString());
-		}
-		return string  + "\n";
-	}
-	
 	public List<String> getColumnNames(String dimName){
 		List<String> columns = new LinkedList<String>();
 		for(Level l: levels){
@@ -44,11 +34,20 @@ public class Hierachy {
 		return columns;
 	}
 	
-	public List<Column> getColumns(String before){
-		List<Column> columns = new LinkedList<Column>();
+	public List<DBColumn> getColumns(String before){
+		List<DBColumn> columns = new LinkedList<DBColumn>();
 		for(Level l: levels){
-			columns.addAll(l.getColumns(before));
+			columns.addAll(l.getCols(before));
 		}
 		return columns;
+	}
+
+	public String toString(){
+		String string = "JERARQUIA:\n\tnombre = "+name+ "\n niveles:\n";
+		string = string.concat("levels:" + "\n");
+		for (Level p : levels) {
+			string = string.concat(p.toString());
+		}
+		return string + "\n";
 	}
 }

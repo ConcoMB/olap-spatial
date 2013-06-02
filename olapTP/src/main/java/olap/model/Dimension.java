@@ -1,4 +1,4 @@
-package olap.domain;
+package olap.model;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,21 +6,19 @@ import java.util.List;
 public class Dimension {
 
 	private String name;
-	private List<Hierachy> hierachies;
-	private List<Level> levels;
+	private List<Hierarchy> hierachies = new LinkedList<Hierarchy>();
+	private List<Level> levels = new LinkedList<Level>();
 	
 	
 	public Dimension(String name){
 		this.name = name;
-		this.hierachies = new LinkedList<Hierachy>();
-		this.levels = new LinkedList<Level>();
 	}
 	
-	public void addHierachy(Hierachy h){
+	public void addHierachy(Hierarchy h){
 		hierachies.add(h);
 	}
 	
-	public List<Hierachy> getHierachies(){
+	public List<Hierarchy> getHierachies(){
 		return this.hierachies;
 	}
 	
@@ -43,7 +41,7 @@ public class Dimension {
 			string = string.concat(p.toString() + "\n");
 		}
 		string = string.concat("hierachiesList:" + "\n");
-		for (Hierachy p : hierachies) {
+		for (Hierarchy p : hierachies) {
 			string = string.concat(p.toString() + "\n");
 		}
 		
@@ -55,18 +53,18 @@ public class Dimension {
 		for(Level l: levels){
 			columns.addAll(l.getColumnNames(cuboName));			
 		}
-		for(Hierachy h:hierachies){
+		for(Hierarchy h:hierachies){
 			columns.addAll(h.getColumnNames(cuboName));
 		}		
 		return columns;
 	}
 	
-	public List<Column> getColumns(String before){
-		List<Column> columns = new LinkedList<Column>();
+	public List<DBColumn> getColumns(String before){
+		List<DBColumn> columns = new LinkedList<DBColumn>();
 		for(Level l: levels){
-			columns.addAll(l.getColumns(before));
+			columns.addAll(l.getCols(before));
 		}
-		for(Hierachy h: hierachies){
+		for(Hierarchy h: hierachies){
 			columns.addAll(h.getColumns(before));
 		}
 		return columns;

@@ -1,4 +1,4 @@
-package ar.edu.itba.olap.web;
+package olap.web;
 
 
 

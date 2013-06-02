@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import olap.domain.Api;
-import olap.domain.ApiImpl;
-import olap.domain.Column;
-import olap.domain.MultiDim;
-import olap.domain.MultiDimToTablesDictionary;
-import olap.domain.MultiDimToTablesDictionaryDummy;
-import olap.domain.Table;
+import olap.model.SpatialOlapApi;
+import olap.model.SpatialOlapApiImpl;
+import olap.model.DBColumn;
+import olap.model.MultiDim;
+import olap.model.MultiDimConverter;
+import olap.model.MultiDimConverterDummy;
+import olap.model.SingleTable;
 import olap.repository.TablesRepository;
 import olap.repository.impl.TablesDatabaseRepository;
 
@@ -29,22 +29,22 @@ public class CreateAutomaticOutput extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		TablesRepository tablesDAO = TablesDatabaseRepository.getInstance();
 		
-		Api api = ApiImpl.getInstance();
+		SpatialOlapApi api = SpatialOlapApiImpl.getInstance();
 		
 		MultiDim multidim = api.getMultiDim("input.xml");
-		List<Column> multidimColumns = multidim.getColumns();
+		List<DBColumn> multidimColumns = multidim.getColumns();
 		
-		List<MultiDimToTablesDictionary> columnsInTable = new LinkedList<MultiDimToTablesDictionary>();
+		List<MultiDimConverter> columnsInTable = new LinkedList<MultiDimConverter>();
 		
-		for(Column multidimColumn : multidimColumns) {
-			MultiDimToTablesDictionaryDummy dic = new MultiDimToTablesDictionaryDummy(multidimColumn.getName());
+		for(DBColumn multidimColumn : multidimColumns) {
+			MultiDimConverterDummy dic = new MultiDimConverterDummy(multidimColumn.getName());
 			columnsInTable.add(dic);
 		}
 		
 		req.setAttribute("columnsInTable", columnsInTable);
 		
 		String tableName = multidim.getCubos().get(0).getName();
-		Table table = createTable(tableName, multidimColumns);
+		SingleTable table = createTable(tableName, multidimColumns);
 		
 		tablesDAO.createTable(table);
 		
@@ -58,16 +58,16 @@ public class CreateAutomaticOutput extends HttpServlet{
 		req.getRequestDispatcher("/WEB-INF/jsp/manageSelectedColumns.jsp").forward(req, resp);
 	}
 	
-	private Table createTable(String tableName, List<Column> columns) {
-		List<Column> tableColumns = new LinkedList<Column>();
+	private SingleTable createTable(String tableName, List<DBColumn> columns) {
+		List<DBColumn> tableColumns = new LinkedList<DBColumn>();
 		
-		for(Column column : columns) {
+		for(DBColumn column : columns) {
 			String type = getType(column.getType());
-			Column tableColumn = new Column(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
+			DBColumn tableColumn = new DBColumn(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
 			tableColumns.add(tableColumn);
 		}
 		
-		Table table = new Table(tableName, tableColumns);
+		SingleTable table = new SingleTable(tableName, tableColumns);
 		return table;
 	}
 

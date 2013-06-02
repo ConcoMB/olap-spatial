@@ -1,4 +1,4 @@
-package olap.domain;
+package olap.model;
 
 public class Property {
 
@@ -26,8 +26,8 @@ public class Property {
 		return id;
 	}
 	
-	public Column getColumn(String before){
-		Column column = new Column(before + name, type, isPrimaryKey, id);
+	public DBColumn getColumn(String before){
+		DBColumn column = new DBColumn(before + name, type, isPrimaryKey, id);
 		return column;
 	}
 	

@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import olap.domain.Column;
-import olap.domain.ConnectionManager;
-import olap.domain.Table;
-import olap.domain.exceptions.DatabaseException;
+import olap.exceptions.DatabaseException;
+import olap.model.DBColumn;
+import olap.model.DBConnectionHandler;
+import olap.model.SingleTable;
 import olap.repository.TablesRepository;
 
 public class TablesDatabaseRepository implements TablesRepository {
@@ -26,7 +26,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	@Override
 	public List<String> getTables() {
 //		select * from information_schema.tables where table_type = 'BASE TABLE' and table_schema = 'public'
-		ConnectionManager manager = ConnectionManager.getInstance();
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		List<String> tables = new LinkedList<String>();
@@ -75,8 +75,8 @@ public class TablesDatabaseRepository implements TablesRepository {
 
 
 	@Override
-	public void createTable(Table table) {
-		ConnectionManager manager = ConnectionManager.getInstance();
+	public void createTable(SingleTable table) {
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		
@@ -93,7 +93,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 
 	@Override
 	public void executeQuery(String query) {
-		ConnectionManager manager = ConnectionManager.getInstance();
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		
@@ -111,7 +111,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	@Override
 	public List<String> getTableColumsNames(String tableName) {
 //		select column_name from information_schema.columns where table_name='usuarios';
-		ConnectionManager manager = ConnectionManager.getInstance();
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		List<String> columns = new LinkedList<String>();
@@ -134,12 +134,12 @@ public class TablesDatabaseRepository implements TablesRepository {
 	}
 	
 	@Override
-	public List<Column> getTableColums(String tableName) {
+	public List<DBColumn> getTableColums(String tableName) {
 //		select column_name from information_schema.columns where table_name='usuarios';
-		ConnectionManager manager = ConnectionManager.getInstance();
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
-		List<Column> columns = new LinkedList<Column>();
+		List<DBColumn> columns = new LinkedList<DBColumn>();
 		
 		try {
 			stmt = conn.prepareStatement("select column_name, data_type from information_schema.columns where table_name=?");
@@ -147,7 +147,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 			ResultSet cur = stmt.executeQuery();
 			
 			while(cur.next()){
-				Column column = new Column(cur.getString("column_name"), cur.getString("data_type"), false, false);
+				DBColumn column = new DBColumn(cur.getString("column_name"), cur.getString("data_type"), false, false);
 				columns.add(column);
 			}
 			
@@ -159,7 +159,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 		return columns;
 	}
 	
-	private String getQueryForTableCreation(Table table) {
+	private String getQueryForTableCreation(SingleTable table) {
 		StringBuilder query = new StringBuilder();
 		
 		query.append("CREATE TABLE ");
@@ -169,11 +169,11 @@ public class TablesDatabaseRepository implements TablesRepository {
 		StringBuilder primaryKeys = new StringBuilder();
 		primaryKeys.append(",PRIMARY KEY(");
 		
-		List<Column> columns = table.getColumns();
+		List<DBColumn> columns = table.getColumns();
 		
 		int i = 1;
 		boolean thereIsAPrimaryKey = false;
-		for(Column column : columns) {
+		for(DBColumn column : columns) {
 			query.append(column.getName());
 			query.append(" ");
 			query.append(column.getType());

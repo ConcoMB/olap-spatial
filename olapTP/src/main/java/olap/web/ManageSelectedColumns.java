@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import olap.domain.Api;
-import olap.domain.ApiImpl;
-import olap.domain.Column;
-import olap.domain.MultiDim;
-import olap.domain.MultiDimToTablesDictionary;
-import olap.domain.MultiDimToTablesDictionaryImpl;
+import olap.model.SpatialOlapApi;
+import olap.model.SpatialOlapApiImpl;
+import olap.model.DBColumn;
+import olap.model.MultiDim;
+import olap.model.MultiDimConverter;
+import olap.model.MultiDimConverterImpl;
 
 @SuppressWarnings("serial")
 public class ManageSelectedColumns extends HttpServlet{
@@ -30,13 +30,13 @@ public class ManageSelectedColumns extends HttpServlet{
 		HttpSession session = req.getSession();
 		String tableName = (String) session.getAttribute("uniqueTable");
 		
-		List<Column> databaseColumns = (List<Column>) session.getAttribute("columns");
-		List<Column> multidimColumns = (List<Column>) session.getAttribute("multidimColumns");
+		List<DBColumn> databaseColumns = (List<DBColumn>) session.getAttribute("columns");
+		List<DBColumn> multidimColumns = (List<DBColumn>) session.getAttribute("multidimColumns");
 		
-		List<MultiDimToTablesDictionary> columnsInTable = new LinkedList<MultiDimToTablesDictionary>();
-		for(Column multidimColumn : multidimColumns) {
+		List<MultiDimConverter> columnsInTable = new LinkedList<MultiDimConverter>();
+		for(DBColumn multidimColumn : multidimColumns) {
 			String columnTableName = (String) req.getParameter(multidimColumn.getName());
-			MultiDimToTablesDictionary dic = new MultiDimToTablesDictionaryImpl(multidimColumn.getName(), columnTableName);
+			MultiDimConverter dic = new MultiDimConverterImpl(multidimColumn.getName(), columnTableName);
 			columnsInTable.add(dic);
 		}
 		
@@ -44,7 +44,7 @@ public class ManageSelectedColumns extends HttpServlet{
 		
 		MultiDim multidim = (MultiDim) session.getAttribute("multidim");
 		
-		Api api = ApiImpl.getInstance();
+		SpatialOlapApi api = SpatialOlapApiImpl.getInstance();
 		api.generateOutput("geomondrian.xml", columnsInTable, multidim, tableName);
 		
 		if(typesAreWrong(multidimColumns, databaseColumns, columnsInTable)) {
@@ -59,11 +59,11 @@ public class ManageSelectedColumns extends HttpServlet{
 		req.getRequestDispatcher("/WEB-INF/jsp/manageSelectedColumns.jsp").forward(req, resp);
 	}
 	
-	private boolean typesAreWrong(List<Column> multidimColumns, List<Column> databaseColumns, List<MultiDimToTablesDictionary> dictionary) {
-		for(MultiDimToTablesDictionary dic : dictionary) {
-			for(Column multidimColumn : multidimColumns) {
+	private boolean typesAreWrong(List<DBColumn> multidimColumns, List<DBColumn> databaseColumns, List<MultiDimConverter> dictionary) {
+		for(MultiDimConverter dic : dictionary) {
+			for(DBColumn multidimColumn : multidimColumns) {
 				if(dic.getMultidimName().equalsIgnoreCase(multidimColumn.getName())) {
-					for(Column databaseColumn : databaseColumns) {
+					for(DBColumn databaseColumn : databaseColumns) {
 						if(dic.getColumnName().equalsIgnoreCase(databaseColumn.getName())) {
 							if(!typesAreEqual(multidimColumn.getType(), databaseColumn.getType())) {
 								return true;

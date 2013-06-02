@@ -1,51 +1,50 @@
-package olap.domain;
+package olap.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import olap.exceptions.XmlException;
+import olap.model.Dimension;
+import olap.model.DimensionUsage;
+import olap.model.Hierarchy;
+import olap.model.Level;
+import olap.model.Measure;
+import olap.model.MultiDim;
+import olap.model.OlapCube;
+import olap.model.Property;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class InputParser {
+public class XmlReader {
 
-//	public static void main(String[] args) {
-//        InputParser ip = new InputParser();
-//        MultiDim multidim = ip.getMultiDim("input.xml");
-//		List<Column> columns = multidim.getColumns();
-//		System.out.println("Columns:"+'\n');
-//		for(String s: columns){
-//			System.out.println(s + '\n');
-//		}
-//		System.out.println(multidim);
-//		
-//        
-//    }
-
-	public static org.w3c.dom.Document loadXMLFrom(String xml)
-			throws org.xml.sax.SAXException, java.io.IOException {
-		return loadXMLFrom(new java.io.ByteArrayInputStream(xml.getBytes()));
+	public static Document read(String xml) throws org.xml.sax.SAXException,
+			IOException, ParserConfigurationException {
+		return read(new ByteArrayInputStream(xml.getBytes()));
 	}
 
-	public static org.w3c.dom.Document loadXMLFrom(java.io.InputStream is)
-			throws org.xml.sax.SAXException, java.io.IOException {
-		javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory
+	public static Document read(InputStream is)
+			throws org.xml.sax.SAXException, java.io.IOException,
+			ParserConfigurationException {
+		javax.xml.parsers.DocumentBuilderFactory factory = DocumentBuilderFactory
 				.newInstance();
 		factory.setNamespaceAware(true);
-		javax.xml.parsers.DocumentBuilder builder = null;
-		try {
-			builder = factory.newDocumentBuilder();
-		} catch (javax.xml.parsers.ParserConfigurationException ex) {
-		}
+		DocumentBuilder builder = null;
+		builder = factory.newDocumentBuilder();
 		org.w3c.dom.Document doc = builder.parse(is);
 		is.close();
 		return doc;
 	}
 
-	public MultiDim getMultiDim(String inputPath) {
+	public MultiDim readMultiDim(String inputPath) {
 		File input = new File(inputPath);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
@@ -54,38 +53,31 @@ public class InputParser {
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(input);
-
 			Node root = doc.getElementsByTagName("multidim").item(0);
 			NodeList children = root.getChildNodes();
-
 			for (int i = 0; i < children.getLength(); i++) {
 				Node first = children.item(i);
-				// En child esta el nodo dimension o cubo
 				if (first.getNodeType() == Node.ELEMENT_NODE
 						&& first.getNodeName().equals("dimension")) {
 					Dimension dim = this.getDimension(first);
 					multidim.addDimension(dim);
 				} else if (first.getNodeType() == Node.ELEMENT_NODE
 						&& first.getNodeName().equals("cubo")) {
-					Cubo cubo = this.getCubo(first);
+					OlapCube cubo = this.readOlapCube(first);
 					multidim.addCubo(cubo);
 				}
 			}
-			
-			for(Cubo cubo : multidim.getCubos()){
-                List<Dimension> dims = multidim.getDimensions();
-                for(DimensionUsage dimUsage : cubo.getDimensionUsage()){
-                    dimUsage.setDimension(this.getDimension(dimUsage.getPtr(), dims));
-                }
-            }
-
+			for (OlapCube olapCube : multidim.getCubos()) {
+				List<Dimension> dims = multidim.getDimensions();
+				for (DimensionUsage dimUsage : olapCube.getDimensionUsage()) {
+					dimUsage.setDimension(this.readDimension(dimUsage.getPtr(),
+							dims));
+				}
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return multidim;
-
 	}
 
 	public Dimension getDimension(Node node) {
@@ -93,19 +85,16 @@ public class InputParser {
 				.getNodeValue());
 		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
 			Node child = node.getChildNodes().item(i);
-			// Aqui voy a tener un elemento
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 				if (child.getNodeName().equals("level")) {
-					Level level = this.getLevel(child, dim.getName(),true);
+					Level level = this.getLevel(child, dim.getName(), true);
 					dim.addLevel(level);
 				} else if (child.getNodeName().equals("hierarchy")) {
-					Hierachy hierachy = this.getHierachy(child);
+					Hierarchy hierachy = this.readHierachy(child);
 					dim.addHierachy(hierachy);
 				}
-
 			}
 		}
-
 		return dim;
 	}
 
@@ -116,29 +105,26 @@ public class InputParser {
 		if (nodeName != null && nodePos != null) {
 			level = new Level(nodeName.getNodeValue(), nodePos.getNodeValue());
 		} else {
-			// Nivel de dimension, no tiene posicion y adopta el nombre de la
-			// dim
 			level = new Level(dimName, 0);
 		}
 		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
 			Node child = node.getChildNodes().item(i);
 			if (child.getNodeType() == Node.ELEMENT_NODE
 					&& child.getNodeName().equals("property")) {
-				Property property = this.getProperty(child, isPrimaryKey);
+				Property property = this.readProperty(child, isPrimaryKey);
 				level.addProperty(property);
 			}
 		}
-
 		return level;
 	}
 
-	public Hierachy getHierachy(Node node) {
-		Hierachy hierachy;
+	public Hierarchy readHierachy(Node node) {
+		Hierarchy hierachy;
 		Node nodeName = node.getAttributes().getNamedItem("name");
 		if (nodeName != null) {
-			hierachy = new Hierachy(nodeName.getNodeValue());
+			hierachy = new Hierarchy(nodeName.getNodeValue());
 		} else {
-			hierachy = new Hierachy(null);
+			hierachy = new Hierarchy(null);
 		}
 		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
 			Node child = node.getChildNodes().item(i);
@@ -148,11 +134,10 @@ public class InputParser {
 				hierachy.addLevel(level);
 			}
 		}
-
 		return hierachy;
 	}
 
-	public Property getProperty(Node node, boolean isPrimaryKey) {
+	public Property readProperty(Node node, boolean isPrimaryKey) {
 		String type = null;
 		boolean id = false;
 		String name = node.getFirstChild().getNodeValue().trim();
@@ -164,36 +149,33 @@ public class InputParser {
 		if (aux != null) {
 			id = aux.getNodeValue().equals("true");
 		}
-		Property property = new Property(name, type, id, isPrimaryKey && id);
-
-		return property;
+		return new Property(name, type, id, isPrimaryKey && id);
 	}
 
-	public Cubo getCubo(Node node) {
-		Cubo cubo;
+	public OlapCube readOlapCube(Node node) {
+		OlapCube olapCube;
 		Node nodeName = node.getAttributes().getNamedItem("name");
 		if (nodeName != null) {
-			cubo = new Cubo(nodeName.getNodeValue());
+			olapCube = new OlapCube(nodeName.getNodeValue());
 		} else {
-			cubo = new Cubo(null);
+			olapCube = new OlapCube(null);
 		}
 		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
 			Node child = node.getChildNodes().item(i);
 			if (child.getNodeType() == Node.ELEMENT_NODE
 					&& child.getNodeName().equals("measure")) {
-				Measure measure = this.getMeasure(child);
-				cubo.addMeasure(measure);
+				Measure measure = readMeasure(child);
+				olapCube.addMeasure(measure);
 			} else if (child.getNodeType() == Node.ELEMENT_NODE
 					&& child.getNodeName().equals("dimension")) {
-				DimensionUsage dimensionUsage = this.getDimensionUsage(child);
-				cubo.addDimensionUsage(dimensionUsage);
+				DimensionUsage dimensionUsage = this.readDimensionUsage(child);
+				olapCube.addDimensionUsage(dimensionUsage);
 			}
 		}
-
-		return cubo;
+		return olapCube;
 	}
 
-	public Measure getMeasure(Node node) {
+	public Measure readMeasure(Node node) {
 		String name = null;
 		String type = null;
 		String agg = null;
@@ -209,11 +191,10 @@ public class InputParser {
 		if (nodeAgg != null) {
 			agg = nodeAgg.getNodeValue();
 		}
-		Measure measure = new Measure(name, type, agg);
-		return measure;
+		return new Measure(name, type, agg);
 	}
 
-	public DimensionUsage getDimensionUsage(Node node) {
+	public DimensionUsage readDimensionUsage(Node node) {
 		String name = null;
 		String ptr = null;
 		Node nodeName = node.getAttributes().getNamedItem("name");
@@ -227,14 +208,13 @@ public class InputParser {
 		DimensionUsage du = new DimensionUsage(name, ptr);
 		return du;
 	}
-	
-	
-	private Dimension getDimension(String ptr, List<Dimension> dims) {
-        for(Dimension dim : dims){
-            if(dim.getName().compareToIgnoreCase(ptr) == 0){
-                return dim;
-            }
-        }
-        throw new IllegalArgumentException();
-    }
+
+	private Dimension readDimension(String ptr, List<Dimension> dims) {
+		for (Dimension dim : dims) {
+			if (dim.getName().compareToIgnoreCase(ptr) == 0) {
+				return dim;
+			}
+		}
+		throw new XmlException();
+	}
 }

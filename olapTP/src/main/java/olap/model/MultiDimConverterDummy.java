@@ -1,10 +1,10 @@
-package olap.domain;
+package olap.model;
 
-public class MultiDimToTablesDictionaryDummy implements MultiDimToTablesDictionary{
+public class MultiDimConverterDummy implements MultiDimConverter{
 
 	private String multidimName;
 	
-	public MultiDimToTablesDictionaryDummy(String multidimName) {
+	public MultiDimConverterDummy(String multidimName) {
 		this.multidimName = multidimName;
 	}
 
@@ -39,7 +39,7 @@ public class MultiDimToTablesDictionaryDummy implements MultiDimToTablesDictiona
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MultiDimToTablesDictionaryDummy other = (MultiDimToTablesDictionaryDummy) obj;
+		MultiDimConverterDummy other = (MultiDimConverterDummy) obj;
 		if (multidimName == null) {
 			if (other.multidimName != null)
 				return false;

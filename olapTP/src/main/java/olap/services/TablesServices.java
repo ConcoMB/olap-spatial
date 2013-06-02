@@ -2,8 +2,8 @@ package olap.services;
 
 import java.util.List;
 
-import olap.domain.Column;
-import olap.domain.Table;
+import olap.model.DBColumn;
+import olap.model.SingleTable;
 
 public interface TablesServices {
 
@@ -23,9 +23,9 @@ public interface TablesServices {
 	
 	public List<String> getTableColmnsNames(String tableName);
 	
-	public List<Column> getTableColmns(String tableName);
+	public List<DBColumn> getTableColmns(String tableName);
 	
-	public void createTable(Table table);
+	public void createTable(SingleTable table);
 	
 	public void executeQuery(String query);
 }

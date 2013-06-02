@@ -1,4 +1,4 @@
-package olap.domain;
+package olap.model;
 
 public abstract class PersistentAttributes {
 

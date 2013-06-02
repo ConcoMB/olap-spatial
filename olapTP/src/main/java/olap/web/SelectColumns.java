@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import olap.domain.Api;
-import olap.domain.ApiImpl;
-import olap.domain.Column;
-import olap.domain.MultiDim;
+import olap.model.SpatialOlapApi;
+import olap.model.SpatialOlapApiImpl;
+import olap.model.DBColumn;
+import olap.model.MultiDim;
 import olap.services.TablesServices;
 import olap.services.impl.TablesServicesImpl;
 
@@ -30,7 +30,7 @@ public class SelectColumns extends HttpServlet{
 		
 		TablesServices tablesServices = TablesServicesImpl.getInstance();
 		
-		List<Column> columns = tablesServices.getTableColmns(uniqueTable);
+		List<DBColumn> columns = tablesServices.getTableColmns(uniqueTable);
 		session.setAttribute("columns", columns);
 		req.setAttribute("columns", columns);
 		
@@ -38,10 +38,10 @@ public class SelectColumns extends HttpServlet{
 		
 		req.setAttribute("message", "Columnas de la tabla " + uniqueTable);
 		
-		Api api = ApiImpl.getInstance();
+		SpatialOlapApi api = SpatialOlapApiImpl.getInstance();
 		MultiDim multidim = api.getMultiDim("input.xml");
 		
-		List<Column> multidimColumns = multidim.getColumns();
+		List<DBColumn> multidimColumns = multidim.getColumns();
 		
 		session.setAttribute("multidim", multidim);
 		req.setAttribute("multidimColumns", multidimColumns);

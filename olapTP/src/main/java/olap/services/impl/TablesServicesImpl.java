@@ -2,8 +2,8 @@ package olap.services.impl;
 
 import java.util.List;
 
-import olap.domain.Column;
-import olap.domain.Table;
+import olap.model.DBColumn;
+import olap.model.SingleTable;
 import olap.repository.TablesRepository;
 import olap.repository.impl.TablesDatabaseRepository;
 import olap.services.TablesServices;
@@ -66,7 +66,7 @@ public class TablesServicesImpl implements TablesServices {
 	}
 
 	@Override
-	public void createTable(Table table) {
+	public void createTable(SingleTable table) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -83,7 +83,7 @@ public class TablesServicesImpl implements TablesServices {
 	}
 	
 	@Override
-	public List<Column> getTableColmns(String tableName) {
+	public List<DBColumn> getTableColmns(String tableName) {
 		return tablesDAO.getTableColums(tableName);
 	}
 }

@@ -1,13 +1,13 @@
-package olap.domain;
+package olap.model;
 
 import java.util.List;
 
-public class Table {
+public class SingleTable {
 	
 	private String name;
-	private List<Column> columns;
+	private List<DBColumn> columns;
 
-	public Table(String name, List<Column> columns) throws IllegalArgumentException{
+	public SingleTable(String name, List<DBColumn> columns) throws IllegalArgumentException{
 		this.setName(name);
 		this.columns = columns;
 	}
@@ -24,11 +24,11 @@ public class Table {
 		}
 	}
 
-	public List<Column> getColumns() {
+	public List<DBColumn> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<Column> columns) {
+	public void setColumns(List<DBColumn> columns) {
 		this.columns = columns;
 	}
 
@@ -48,7 +48,7 @@ public class Table {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Table other = (Table) obj;
+		SingleTable other = (SingleTable) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -56,6 +56,4 @@ public class Table {
 			return false;
 		return true;
 	}
-
-	
 }

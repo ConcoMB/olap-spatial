@@ -1,4 +1,4 @@
-package olap.domain;
+package olap.model;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,46 +8,52 @@ import java.util.Map.Entry;
 public class MultiDim {
 
 	private List<Dimension> dimensions;
-	private List<Cubo> cubos;
+	private List<OlapCube> olapCubes;
 	
-	public List<Dimension> getDimensions() {
-		return dimensions;
-	}
-
-	public List<Cubo> getCubos() {
-		return cubos;
-	}
-
-
 	public MultiDim() {
 		this.dimensions = new LinkedList<Dimension>();
-		this.cubos = new LinkedList<Cubo>();
+		this.olapCubes = new LinkedList<OlapCube>();
 	}
 
 	public void addDimension(Dimension dim) {
 		dimensions.add(dim);
 	}
 
-	public void addCubo(Cubo cubo) {
-		cubos.add(cubo);
+	public void addCubo(OlapCube cubo) {
+		olapCubes.add(cubo);
+	}
+
+	public List<Dimension> getDimensions() {
+		return dimensions;
+	}
+
+	public List<OlapCube> getCubos() {
+		return olapCubes;
 	}
 
 	public String toString() {
-		String string = "DIMENSIONS_LIST:" + "\n";
+		StringBuffer string = new StringBuffer("MULTI DIM:\n Dimensiones = \n");
 		for (Dimension p : dimensions) {
-			string = string.concat(p.toString());
+			string = string.append(p.toString());
 		}
-
-		string = string.concat("CUBOS_LIST:" + "\n");
-		for (Cubo p : cubos) {
-			string = string.concat(p.toString());
+		string = string.append("CUBOS:" + "\n");
+		for (OlapCube p : olapCubes) {
+			string = string.append(p.toString());
 		}
 		return string + "\n";
 	}
 
+	public List<DBColumn> getColumns(){
+		List<DBColumn> columns = new LinkedList<DBColumn>();
+		for(OlapCube c : olapCubes){
+			columns.addAll(c.getColumns());
+		}
+		return columns;
+	}
+
 	public List<String> getMultiDimNames(){
 		List<String> columns = new LinkedList<String>();
-		for(Cubo c: cubos){
+		for(OlapCube c: olapCubes){
 			columns.addAll(c.getMeasuresNames());
 			Map<String,Dimension> name = c.getColumnNames();		
 			 List<String> names = new LinkedList<String>();
@@ -58,14 +64,4 @@ public class MultiDim {
 		}
 		return columns;
 	}
-	
-	public List<Column> getColumns(){
-		List<Column> columns = new LinkedList<Column>();
-		for(Cubo c:cubos){
-			columns.addAll(c.getColumns());
-		}
-		
-		return columns;
-	}
-	
 }

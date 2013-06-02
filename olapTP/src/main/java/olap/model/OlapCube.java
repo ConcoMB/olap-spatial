@@ -1,18 +1,17 @@
-package olap.domain;
+package olap.model;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
-public class Cubo {
+public class OlapCube {
 
 	private String name;
 	private List<Measure> measures;
 	private List<DimensionUsage> dimensionUsages;
 
-	public Cubo(String name){
+	public OlapCube(String name){
 		this.name = name;
 		this.measures = new LinkedList<Measure>();
 		this.dimensionUsages = new LinkedList<DimensionUsage>();
@@ -39,7 +38,7 @@ public class Cubo {
 	}
 	
 	public String toString(){
-		String string = "CUBO:name: " + name + "\n";
+		String string = "CUBE: " + name + "\n";
 		string = string.concat("MeasuresLIST:" + "\n");
 		for (Measure p : measures) {
 			string = 	string.concat(p.toString());
@@ -70,8 +69,8 @@ public class Cubo {
 		return columns;
 	}
 	
-	public List<Column> getColumns(){
-		List<Column> columns = new LinkedList<Column>();
+	public List<DBColumn> getColumns(){
+		List<DBColumn> columns = new LinkedList<DBColumn>();
 		
 		for(Measure m: measures){
 			columns.add(m.getColumn());
