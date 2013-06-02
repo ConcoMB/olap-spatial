@@ -8,19 +8,19 @@ import olap.db.DBColumn;
 public class Dimension {
 
 	private String name;
-	private List<Hierarchy> hierachies = new LinkedList<Hierarchy>();
+	private List<Hierarchy> hierarchies = new LinkedList<Hierarchy>();
 	private List<Level> levels = new LinkedList<Level>();
 	
 	public Dimension(String name){
 		this.name = name;
 	}
 	
-	public void addHierachy(Hierarchy h){
-		hierachies.add(h);
+	public void addHierarchy(Hierarchy h){
+		hierarchies.add(h);
 	}
 	
-	public List<Hierarchy> getHierachies(){
-		return this.hierachies;
+	public List<Hierarchy> getHierarchies(){
+		return this.hierarchies;
 	}
 	
 	public List<Level> getLevels(){
@@ -40,7 +40,7 @@ public class Dimension {
 		for(Level l: levels){
 			columns.addAll(l.getColumnNames(cuboName));			
 		}
-		for(Hierarchy h:hierachies){
+		for(Hierarchy h:hierarchies){
 			columns.addAll(h.getColumnNames(cuboName));
 		}		
 		return columns;
@@ -51,7 +51,7 @@ public class Dimension {
 		for(Level l: levels){
 			columns.addAll(l.getCols(before));
 		}
-		for(Hierarchy h: hierachies){
+		for(Hierarchy h: hierarchies){
 			columns.addAll(h.getColumns(before));
 		}
 		return columns;
@@ -59,12 +59,12 @@ public class Dimension {
 	
 	public String toString(){
 		StringBuffer s = new StringBuffer("\n" + "DIMENSION: name: "+name+"\n");
-		s = s.append("Dimension's levelsList:" + "\n");
+		s = s.append("niveles: \n");
 		for (Level p : levels) {
 			s = s.append(p.toString() + "\n");
 		}
-		s = s.append("hierachiesList:" + "\n");
-		for (Hierarchy p : hierachies) {
+		s = s.append("jerarquias:" + "\n");
+		for (Hierarchy p : hierarchies) {
 			s = s.append(p.toString() + "\n");
 		}
 		return s  + "\n";

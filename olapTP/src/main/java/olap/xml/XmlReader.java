@@ -1,14 +1,10 @@
 package olap.xml;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import olap.exception.XmlException;
 import olap.model.Dimension;
@@ -23,191 +19,131 @@ import olap.model.Property;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class XmlReader {
 
-	public static Document read(String xml) throws SAXException,
-			IOException, ParserConfigurationException {
-		return read(new ByteArrayInputStream(xml.getBytes()));
-	}
-
-	public static Document read(InputStream is)
-			throws org.xml.sax.SAXException, java.io.IOException,
-			ParserConfigurationException {
-		DocumentBuilderFactory factory = DocumentBuilderFactory
-				.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder = null;
-		builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(is);
-		is.close();
-		return doc;
-	}
-
-	public Dimension getDimension(Node node) {
-		Dimension dim = new Dimension(node.getAttributes().getNamedItem("name")
-				.getNodeValue());
-		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
-			Node child = node.getChildNodes().item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE) {
-				if (child.getNodeName().equals("level")) {
-					Level level = this.getLevel(child, dim.getName(), true);
-					dim.addLevel(level);
-				} else if (child.getNodeName().equals("hierarchy")) {
-					Hierarchy hierachy = this.readHierachy(child);
-					dim.addHierachy(hierachy);
-				}
-			}
-		}
-		return dim;
-	}
-
-	public Level getLevel(Node node, String dimName, boolean isPrimaryKey) {
-		Level level;
-		Node nodeName = node.getAttributes().getNamedItem("name");
-		Node nodePos = node.getAttributes().getNamedItem("pos");
-		if (nodeName != null && nodePos != null) {
-			level = new Level(nodeName.getNodeValue(), nodePos.getNodeValue());
-		} else {
-			level = new Level(dimName, 0);
-		}
-		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
-			Node child = node.getChildNodes().item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE
-					&& child.getNodeName().equals("property")) {
-				Property property = this.readProperty(child, isPrimaryKey);
-				level.addProperty(property);
-			}
-		}
-		return level;
-	}
-
-	public Hierarchy readHierachy(Node node) {
-		Hierarchy hierachy;
-		Node nodeName = node.getAttributes().getNamedItem("name");
-		if (nodeName != null) {
-			hierachy = new Hierarchy(nodeName.getNodeValue());
-		} else {
-			hierachy = new Hierarchy(null);
-		}
-		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
-			Node child = node.getChildNodes().item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE
-					&& child.getNodeName().equals("level")) {
-				Level level = this.getLevel(child, null, false);
-				hierachy.addLevel(level);
-			}
-		}
-		return hierachy;
-	}
-
-	public Property readProperty(Node node, boolean isPrimaryKey) {
-		String type = null;
-		boolean id = false;
-		String name = node.getFirstChild().getNodeValue().trim();
-		Node aux = node.getAttributes().getNamedItem("type");
-		if (aux != null) {
-			type = aux.getNodeValue();
-		}
-		aux = node.getAttributes().getNamedItem("ID");
-		if (aux != null) {
-			id = aux.getNodeValue().equals("true");
-		}
-		return new Property(name, type, id, isPrimaryKey && id);
-	}
-
-	public OlapCube readOlapCube(Node node) {
-		OlapCube olapCube;
-		Node nodeName = node.getAttributes().getNamedItem("name");
-		if (nodeName != null) {
-			olapCube = new OlapCube(nodeName.getNodeValue());
-		} else {
-			olapCube = new OlapCube(null);
-		}
-		for (int i = 0; i < node.getChildNodes().getLength(); i++) {
-			Node child = node.getChildNodes().item(i);
-			if (child.getNodeType() == Node.ELEMENT_NODE
-					&& child.getNodeName().equals("measure")) {
-				Measure measure = readMeasure(child);
-				olapCube.addMeasure(measure);
-			} else if (child.getNodeType() == Node.ELEMENT_NODE
-					&& child.getNodeName().equals("dimension")) {
-				DimensionWrapper dimensionUsage = this.readDimensionUsage(child);
-				olapCube.addDimensionUsage(dimensionUsage);
-			}
-		}
-		return olapCube;
-	}
-
-	public Measure readMeasure(Node node) {
-		String name = null;
-		String type = null;
-		String agg = null;
-		Node nodeName = node.getAttributes().getNamedItem("name");
-		Node nodeType = node.getAttributes().getNamedItem("type");
-		Node nodeAgg = node.getAttributes().getNamedItem("agg");
-		if (nodeName != null) {
-			name = nodeName.getNodeValue();
-		}
-		if (nodeType != null) {
-			type = nodeType.getNodeValue();
-		}
-		if (nodeAgg != null) {
-			agg = nodeAgg.getNodeValue();
-		}
-		return new Measure(name, type, agg);
-	}
-
-	public DimensionWrapper readDimensionUsage(Node node) {
-		String name = null;
-		String ptr = null;
-		Node nodeName = node.getAttributes().getNamedItem("name");
-		Node nodePtr = node.getAttributes().getNamedItem("ptr");
-		if (nodeName != null) {
-			name = nodeName.getNodeValue();
-		}
-		if (nodePtr != null) {
-			ptr = nodePtr.getNodeValue();
-		}
-		DimensionWrapper du = new DimensionWrapper(name, ptr);
-		return du;
-	}
-
 	public MultiDim readMultiDim(String in) {
 		File input = new File(in);
-		DocumentBuilder dBuilder;
-		Document doc;
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		MultiDim multidim = new MultiDim();
 		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(input);
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(input);
 			Node root = doc.getElementsByTagName("multidim").item(0);
 			NodeList children = root.getChildNodes();
 			for (int i = 0; i < children.getLength(); i++) {
-				Node first = children.item(i);
-				if (first.getNodeType() == Node.ELEMENT_NODE
-						&& first.getNodeName().equals("dimension")) {
-					Dimension dim = getDimension(first);
-					multidim.addDimension(dim);
-				} else if (first.getNodeType() == Node.ELEMENT_NODE
-						&& first.getNodeName().equals("cubo")) {
-					OlapCube olapCube = readOlapCube(first);
-					multidim.addOlapCube(olapCube);
+				Node n = children.item(i);
+				if (n.getNodeType() == Node.ELEMENT_NODE
+						&& n.getNodeName().equals("dimension")) {
+					multidim.addDimension(readDim(n));
+				} else if (n.getNodeType() == Node.ELEMENT_NODE
+						&& n.getNodeName().equals("cubo")) {
+					multidim.addOlapCube(readOlapCube(n));
 				}
 			}
 			for (OlapCube olapCube : multidim.getOlapCubes()) {
 				List<Dimension> dims = multidim.getDimensions();
 				for (DimensionWrapper dimW : olapCube.getDimensionUsage()) {
-					dimW.setDimension(this.readDimension(dimW.getPtr(),
-							dims));
+					dimW.setDimension(this.readDimension(dimW.getPtr(), dims));
 				}
 			}
 		} catch (Exception e) {
 			throw new XmlException(e.getMessage());
 		}
 		return multidim;
+	}
+	
+	private Dimension readDim(Node n) {
+		Dimension dim = new Dimension(n.getAttributes().getNamedItem("name")
+				.getNodeValue());
+		for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+			Node child = n.getChildNodes().item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE) {
+				if (child.getNodeName().equals("level")) {
+					dim.addLevel(readLevel(child, dim.getName(), true));
+				} else if (child.getNodeName().equals("hierarchy")) {
+					dim.addHierarchy(readHierarchy(child));
+				}
+			}
+		}
+		return dim;
+	}
+
+	private Level readLevel(Node n, String dim, boolean PK) {
+		Node name = n.getAttributes().getNamedItem("name");
+		Node pos = n.getAttributes().getNamedItem("pos");
+		Level l;
+		if (name != null && pos != null) {
+			l = new Level(name.getNodeValue(), pos.getNodeValue());
+		} else {
+			l = new Level(dim, 0);
+		}
+		for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+			Node child = n.getChildNodes().item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE
+					&& child.getNodeName().equals("property")) {
+				l.addProperty(readProperty(child, PK));
+			}
+		}
+		return l;
+	}
+
+	private Hierarchy readHierarchy(Node n) {
+		Node name = n.getAttributes().getNamedItem("name");
+		Hierarchy h = new Hierarchy(name != null ? name.getNodeValue() : null);
+		for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+			Node child = n.getChildNodes().item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE
+					&& child.getNodeName().equals("level")) {
+				h.addLevel(readLevel(child, null, false));
+			}
+		}
+		return h;
+	}
+
+	private Property readProperty(Node n, boolean PK) {
+		String name = n.getFirstChild().getNodeValue().trim();
+		Node other = n.getAttributes().getNamedItem("type");
+		String type = other != null ? other.getNodeValue() : null;
+		other = n.getAttributes().getNamedItem("ID");
+		boolean id = other != null ? other.getNodeValue().equals("true")
+				: false;
+		return new Property(name, type, id, PK && id);
+	}
+
+	private OlapCube readOlapCube(Node n) {
+		Node name = n.getAttributes().getNamedItem("name");
+		OlapCube olapCube = name != null ? new OlapCube(name.getNodeValue())
+				: new OlapCube(null);
+		for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+			Node child = n.getChildNodes().item(i);
+			if (child.getNodeType() == Node.ELEMENT_NODE
+					&& child.getNodeName().equals("measure")) {
+				olapCube.addMeasure(readMeasure(child));
+			} else if (child.getNodeType() == Node.ELEMENT_NODE
+					&& child.getNodeName().equals("dimension")) {
+				olapCube.addDimensionUsage(readDimensionW(child));
+			}
+		}
+		return olapCube;
+	}
+
+	private Measure readMeasure(Node node) {
+		Node nodeName = node.getAttributes().getNamedItem("name");
+		String name = nodeName != null ? nodeName.getNodeValue() : null;
+		Node nodeType = node.getAttributes().getNamedItem("type");
+		String type = nodeType != null ? nodeType.getNodeValue() : null;
+		Node nodeAgg = node.getAttributes().getNamedItem("agg");
+		String agg = nodeAgg != null ? nodeAgg.getNodeValue() : null;
+		return new Measure(name, type, agg);
+	}
+
+	private DimensionWrapper readDimensionW(Node n) {
+		Node nodeName = n.getAttributes().getNamedItem("name");
+		String name = nodeName != null ? nodeName.getNodeValue() : null;
+		Node nodePtr = n.getAttributes().getNamedItem("ptr");
+		String ptr = nodePtr != null ? nodePtr.getNodeValue() : null;
+		return new DimensionWrapper(name, ptr);
 	}
 
 	private Dimension readDimension(String ptr, List<Dimension> dims) {

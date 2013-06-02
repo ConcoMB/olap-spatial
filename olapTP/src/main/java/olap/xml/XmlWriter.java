@@ -46,7 +46,7 @@ public class XmlWriter {
 					Dimension dim = dimUsage.getDimension();
 					Element dimElement = document.createElement("Dimension");
 					dimElement.setAttribute("name", dimUsage.getName());
-					for(Hierarchy hierarchy : dim.getHierachies()){
+					for(Hierarchy hierarchy : dim.getHierarchies()){
 						Element hierarchyElement = document.createElement("Hierarchy");
 						hierarchyElement.setAttribute("name", hierarchy.getName());
 						hierarchyElement.setAttribute("hasAll", "true");
