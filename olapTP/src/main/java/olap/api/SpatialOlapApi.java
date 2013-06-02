@@ -1,6 +1,9 @@
-package olap.model;
+package olap.api;
 
 import java.util.List;
+
+import olap.converter.MultiDimConverter;
+import olap.model.MultiDim;
 
 public interface SpatialOlapApi {
 

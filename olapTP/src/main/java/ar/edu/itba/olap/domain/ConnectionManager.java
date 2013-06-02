@@ -1,4 +1,4 @@
-package olap.model;
+package ar.edu.itba.olap.domain;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,40 +6,40 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import olap.exceptions.DatabaseException;
+import ar.edu.itba.olap.domain.exceptions.DatabaseException;
 
-public class DBConnectionHandler {
+public class ConnectionManager {
 
-	private static DBConnectionHandler instance;
-
-	private String username, password, connectionString;
+	private static ConnectionManager instance;
+	
+	private String username;
+	private String password;
+	private String connectionString;
 	private Connection connection;
-
-	public static synchronized DBConnectionHandler getInstance() {
-		if (instance == null) {
-			instance = new DBConnectionHandler();
+	
+	public static synchronized ConnectionManager getInstance(){
+		if(instance == null){
+			instance = new ConnectionManager();
 			instance.loadParameters();
 		}
 		return instance;
 	}
-
-	private void loadParameters() {
+	
+	private void loadParameters(){
 		Properties properties = new Properties();
-		try {
-			properties.load(getClass().getClassLoader().getResourceAsStream(
-					"setup.properties"));
+		try { 
+			properties.load(getClass().getClassLoader().getResourceAsStream("setup.properties"));
 			username = properties.getProperty("username");
 			password = properties.getProperty("password");
 			connectionString = properties.getProperty("connectionString");
-		} catch (IOException e) {
+		} catch (IOException e) { 
 			throw new DatabaseException(e.getMessage());
 		}
 	}
-
-	public Connection getConnection() {
+	
+	public Connection getConnection(){
 		try {
-			connection = DriverManager.getConnection(connectionString,
-					username, password);
+			connection = DriverManager.getConnection(connectionString, username, password);
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
@@ -47,11 +47,15 @@ public class DBConnectionHandler {
 		return connection;
 	}
 
-	public void closeConnection() {
-		try {
+	public void closeConnection()
+	{
+		try
+		{
 			connection.commit();
 			connection.close();
-		} catch (Exception e) {
+		}
+		catch(Exception e)
+		{
 			throw new DatabaseException(e.getMessage());
 		}
 	}

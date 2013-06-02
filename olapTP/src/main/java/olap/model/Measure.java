@@ -1,5 +1,7 @@
 package olap.model;
 
+import olap.db.DBColumn;
+
 public class Measure {
 
 	private String name, type, agg;

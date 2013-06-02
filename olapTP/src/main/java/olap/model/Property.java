@@ -1,38 +1,37 @@
 package olap.model;
 
+import olap.db.DBColumn;
+
 public class Property {
 
-	private String name;
-	private String type;
-	private boolean id;
-	private boolean isPrimaryKey;
+	private String name, type;
+	private boolean id, isPrimaryKey;
 	
 	public Property(String name, String type, boolean id, boolean isPrimaryKey){
 		this.name = name;
+		this.isPrimaryKey = isPrimaryKey;
 		this.type = type;
 		this.id = id;
-		this.isPrimaryKey = isPrimaryKey;
 	}
 
 	public String getType() {
 		return type;
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public boolean isId() {
 		return id;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public DBColumn getColumn(String before){
 		DBColumn column = new DBColumn(before + name, type, isPrimaryKey, id);
 		return column;
 	}
 	
 	public String toString(){
-		return "PROPERTY:name: " + name + "- type: " + type + "- id: " + id + "\n";
+		return "PROPIEDAD:\n\tnombre = " + name + "; tipo = " + type + (id ? "; ID" : "") + (isPrimaryKey ? "; PK" : "") + "\n";
 	}
-	
 }

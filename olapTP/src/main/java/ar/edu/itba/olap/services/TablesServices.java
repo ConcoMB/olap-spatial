@@ -1,9 +1,9 @@
-package olap.services;
+package ar.edu.itba.olap.services;
 
 import java.util.List;
 
-import olap.db.DBColumn;
-import olap.db.SingleTable;
+import ar.edu.itba.olap.domain.Column;
+import ar.edu.itba.olap.domain.Table;
 
 public interface TablesServices {
 
@@ -23,9 +23,9 @@ public interface TablesServices {
 	
 	public List<String> getTableColmnsNames(String tableName);
 	
-	public List<DBColumn> getTableColmns(String tableName);
+	public List<Column> getTableColmns(String tableName);
 	
-	public void createTable(SingleTable table);
+	public void createTable(Table table);
 	
 	public void executeQuery(String query);
 }

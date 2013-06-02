@@ -5,24 +5,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import olap.db.DBColumn;
+
 public class OlapCube {
 
 	private String name;
-	private List<Measure> measures;
-	private List<DimensionUsage> dimensionUsages;
+	private List<Measure> measures = new LinkedList<Measure>();
+	private List<DimensionUsage> dimensionUsages = new LinkedList<DimensionUsage>();
 
 	public OlapCube(String name){
 		this.name = name;
-		this.measures = new LinkedList<Measure>();
-		this.dimensionUsages = new LinkedList<DimensionUsage>();
 	}
 	
 	public void addMeasure(Measure measure){
 		measures.add(measure);
 	}
 	
-	public void addDimensionUsage(DimensionUsage du){
-		dimensionUsages.add(du);
+	public String getName(){
+		return name;
+	}
+	
+	public void addDimensionUsage(DimensionUsage dim){
+		dimensionUsages.add(dim);
 	}
 	
 	public List<Measure> getMeasures(){
@@ -32,33 +36,13 @@ public class OlapCube {
 	public List<DimensionUsage> getDimensionUsage(){
 		return dimensionUsages;
 	}
-	
-	public String getName(){
-		return name;
-	}
-	
-	public String toString(){
-		String string = "CUBE: " + name + "\n";
-		string = string.concat("MeasuresLIST:" + "\n");
-		for (Measure p : measures) {
-			string = 	string.concat(p.toString());
-		}
-		
-		string = string.concat("DimensionUsagesLIST:" + "\n");
-		for (DimensionUsage p : dimensionUsages) {
-			string = string.concat(p.toString());
-		}
-		
-		return string  + "\n";
-	}
-	
+
 	public Map<String,Dimension> getColumnNames(){
-		Map<String,Dimension> dim_col = new HashMap<String,Dimension>();
-		for(DimensionUsage d: dimensionUsages){
-			dim_col.put(d.getName(),d.getDimension());
+		Map<String,Dimension> map = new HashMap<String,Dimension>();
+		for(DimensionUsage d : dimensionUsages){
+			map.put(d.getName(),d.getDimension());
 		}
-		
-		return dim_col;
+		return map;
 	}
 	
 	public List<String> getMeasuresNames(){
@@ -71,13 +55,25 @@ public class OlapCube {
 	
 	public List<DBColumn> getColumns(){
 		List<DBColumn> columns = new LinkedList<DBColumn>();
-		
-		for(Measure m: measures){
-			columns.add(m.getColumn());
-		}
 		for(DimensionUsage d: dimensionUsages){
 			columns.addAll(d.getColumns());
 		}
+		for(Measure m: measures){
+			columns.add(m.getColumn());
+		}
 		return columns;
+	}
+	
+	public String toString(){
+		StringBuffer s = new StringBuffer("CUBO:\n\tnombre = " + name + "\n");
+		s = s.append("MEDIDAS:\n\t" + "\n");
+		for (Measure p : measures) {
+			s = s.append(p.toString());
+		}
+		s = s.append("DIMS:\n\t" + "\n");
+		for (DimensionUsage p : dimensionUsages) {
+			s = s.append(p.toString());
+		}
+		return s  + "\n";
 	}
 }

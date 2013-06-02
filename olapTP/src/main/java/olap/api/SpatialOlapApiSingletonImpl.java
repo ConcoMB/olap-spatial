@@ -1,21 +1,22 @@
-package olap.model;
+package olap.api;
 
 import java.util.List;
 
+import olap.converter.MultiDimConverter;
+import olap.model.MultiDim;
 import olap.xml.XmlReader;
 import olap.xml.XmlWriter;
 
 
-public class SpatialOlapApiImpl implements SpatialOlapApi {
+public class SpatialOlapApiSingletonImpl implements SpatialOlapApi {
 	
-	private static SpatialOlapApiImpl instance;
+	private static SpatialOlapApiSingletonImpl api;
 	
-	public static synchronized SpatialOlapApiImpl getInstance(){
-		if(instance == null)
-			instance = new SpatialOlapApiImpl();
-		return instance;
+	public static synchronized SpatialOlapApiSingletonImpl getInstance(){
+		if(api == null)
+			api = new SpatialOlapApiSingletonImpl();
+		return api;
 	}
-
 
 	@Override
 	public void generateOutput(String outputPath, List<MultiDimConverter> multidimToTables, MultiDim multidim, String tableName) {

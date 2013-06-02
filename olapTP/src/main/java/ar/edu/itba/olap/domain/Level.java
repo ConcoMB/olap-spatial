@@ -1,24 +1,26 @@
-package olap.model;
+package ar.edu.itba.olap.domain;
 
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-import olap.db.DBColumn;
-
 public class Level implements Comparator<Level>, Comparable<Level>{
 
-	private String name, type;
+	private String name;
 	private int pos;
-	private List<Property> properties = new LinkedList<Property>();
+	private List<Property> properties;
+	private String type;
 	
 	public Level(String name, int pos){
 		this.name = name;
 		this.pos = pos;
+		this.properties = new LinkedList<Property>();
 	}
 	
 	public Level(String name, String pos){
-		this(name, Integer.parseInt(pos));
+		this.name = name;
+		this.pos = Integer.parseInt(pos);
+		this.properties = new LinkedList<Property>();
 	}
 
 	public String getName() {
@@ -33,12 +35,16 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 		return pos;
 	}
 
+	public void setPosition(int pos) {
+		this.pos = pos;
+	}
+
 	public List<Property> getProperties() {
 		return properties;
 	}
 
-	public void setPosition(int pos) {
-		this.pos = pos;
+	public void addProperty(Property property){
+		this.properties.add(property);
 	}
 
 	public String getType() {
@@ -49,10 +55,6 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 		this.type = type;
 	}
 
-	public void addProperty(Property property){
-		this.properties.add(property);
-	}
-	
 	@Override
 	public int compare(Level level1, Level level2) {
 		return level1.getPosition() - level2.getPosition();
@@ -61,6 +63,14 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 	@Override
 	public int compareTo(Level level) {
 		return this.getPosition() - level.getPosition();
+	}
+	
+	public String toString(){
+		String string =  "LEVEL:name: " + name + " pos: " + pos + " type: " + type + "\n";
+		for(Property p :properties){
+			string = string.concat(p.toString());
+		}
+		return string + " fin level \n";
 	}
 	
 	public List<String>getColumnNames(String dimName){
@@ -72,20 +82,12 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 		return columns;
 	}
 	
-	public List<DBColumn> getCols(String b){
-		List<DBColumn> columns = new LinkedList<DBColumn>();
+	public List<Column> getColumns(String before){
+		List<Column> columns = new LinkedList<Column>();
 		for(Property p: properties){
-			columns.add(p.getColumn(b + name + "_"));
+			columns.add(p.getColumn(before + name + "_"));
 		}		
 		return columns;
-	}
-	
-	public String toString(){
-		String string =  "NIVEL:\n\tnombre = " + name + "; tipo = " + type + "; pos = " + pos + "\n\t Propiedades => \n";
-		for(Property p :properties){
-			string = string.concat(p.toString());
-		}
-		return string;
 	}
 	
 }

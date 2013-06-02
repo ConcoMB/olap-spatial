@@ -1,4 +1,5 @@
-package olap.model;
+package ar.edu.itba.olap.domain;
+
 
 public abstract class PersistentAttributes {
 

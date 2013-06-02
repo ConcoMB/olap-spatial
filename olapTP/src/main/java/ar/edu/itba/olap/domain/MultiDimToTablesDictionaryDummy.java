@@ -1,13 +1,12 @@
-package olap.model;
+package ar.edu.itba.olap.domain;
 
-public class MultiDimConverterImpl implements MultiDimConverter{
+
+public class MultiDimToTablesDictionaryDummy implements MultiDimToTablesDictionary{
 
 	private String multidimName;
-	private String columnName;
 	
-	public MultiDimConverterImpl(String multidimName, String columnName) {
+	public MultiDimToTablesDictionaryDummy(String multidimName) {
 		this.multidimName = multidimName;
-		this.columnName = columnName;
 	}
 
 	@Override
@@ -21,19 +20,13 @@ public class MultiDimConverterImpl implements MultiDimConverter{
 
 	@Override
 	public String getColumnName() {
-		return columnName;
-	}
-
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+		return multidimName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((columnName == null) ? 0 : columnName.hashCode());
 		result = prime * result
 				+ ((multidimName == null) ? 0 : multidimName.hashCode());
 		return result;
@@ -47,12 +40,7 @@ public class MultiDimConverterImpl implements MultiDimConverter{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MultiDimConverterImpl other = (MultiDimConverterImpl) obj;
-		if (columnName == null) {
-			if (other.columnName != null)
-				return false;
-		} else if (!columnName.equals(other.columnName))
-			return false;
+		MultiDimToTablesDictionaryDummy other = (MultiDimToTablesDictionaryDummy) obj;
 		if (multidimName == null) {
 			if (other.multidimName != null)
 				return false;

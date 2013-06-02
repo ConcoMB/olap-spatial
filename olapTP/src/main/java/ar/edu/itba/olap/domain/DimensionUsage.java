@@ -1,13 +1,12 @@
-package olap.model;
+package ar.edu.itba.olap.domain;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import olap.db.DBColumn;
-
 public class DimensionUsage {
 	
-	private String name, ptr;
+	private String name;
+	private String ptr;
 	private Dimension dimension;
 	
 	public DimensionUsage(String name, String ptr){
@@ -17,12 +16,6 @@ public class DimensionUsage {
 	
 	public void setDimension(Dimension dimension){
 		this.dimension = dimension;
-	}
-	
-	public List<DBColumn> getColumns(){
-		List<DBColumn> columns = new LinkedList<DBColumn>();
-		columns.addAll(dimension.getColumns(name+"_"));
-		return columns;		
 	}
 	
 	public Dimension getDimension(){
@@ -45,7 +38,14 @@ public class DimensionUsage {
 		this.ptr = ptr;
 	}
 	
-	public String toString(){
-		return "DIMENSION_USAGE:\n\tnombre = " + name + "; ptr = " + ptr + "; dimension = " + dimension + "\n";
+	public List<Column> getColumns(){
+		List<Column> columns = new LinkedList<Column>();
+		columns.addAll(dimension.getColumns(name+"_"));
+		return columns;		
 	}
+	
+	public String toString(){
+		return "DIMENSION_USAGE:name: " + name + "- ptr: " + ptr + "- dimension: " + dimension + "\n";
+	}
+	
 }

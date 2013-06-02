@@ -1,4 +1,4 @@
-package olap.repository.impl;
+package ar.edu.itba.olap.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,19 +6,19 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import olap.db.DBColumn;
-import olap.db.DBConnectionHandler;
-import olap.db.SingleTable;
-import olap.exceptions.DatabaseException;
-import olap.repository.TablesRepository;
+import ar.edu.itba.olap.dao.TablesDAO;
+import ar.edu.itba.olap.domain.Column;
+import ar.edu.itba.olap.domain.ConnectionManager;
+import ar.edu.itba.olap.domain.Table;
+import ar.edu.itba.olap.domain.exceptions.DatabaseException;
 
-public class TablesDatabaseRepository implements TablesRepository {
+public class DatabaseTablesDAO implements TablesDAO {
 
-	private static TablesRepository instance;
+	private static TablesDAO instance;
 	
-	public static synchronized TablesRepository getInstance(){
+	public static synchronized TablesDAO getInstance(){
 		if(instance == null)
-			instance = new TablesDatabaseRepository();
+			instance = new DatabaseTablesDAO();
 		return instance;
 	}
 	
@@ -26,7 +26,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	@Override
 	public List<String> getTables() {
 //		select * from information_schema.tables where table_type = 'BASE TABLE' and table_schema = 'public'
-		DBConnectionHandler manager = DBConnectionHandler.getInstance();
+		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		List<String> tables = new LinkedList<String>();
@@ -75,8 +75,8 @@ public class TablesDatabaseRepository implements TablesRepository {
 
 
 	@Override
-	public void createTable(SingleTable table) {
-		DBConnectionHandler manager = DBConnectionHandler.getInstance();
+	public void createTable(Table table) {
+		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		
@@ -93,7 +93,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 
 	@Override
 	public void executeQuery(String query) {
-		DBConnectionHandler manager = DBConnectionHandler.getInstance();
+		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		
@@ -111,7 +111,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 	@Override
 	public List<String> getTableColumsNames(String tableName) {
 //		select column_name from information_schema.columns where table_name='usuarios';
-		DBConnectionHandler manager = DBConnectionHandler.getInstance();
+		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
 		List<String> columns = new LinkedList<String>();
@@ -134,12 +134,12 @@ public class TablesDatabaseRepository implements TablesRepository {
 	}
 	
 	@Override
-	public List<DBColumn> getTableColums(String tableName) {
+	public List<Column> getTableColums(String tableName) {
 //		select column_name from information_schema.columns where table_name='usuarios';
-		DBConnectionHandler manager = DBConnectionHandler.getInstance();
+		ConnectionManager manager = ConnectionManager.getInstance();
 		Connection conn = manager.getConnection();
 		PreparedStatement stmt;
-		List<DBColumn> columns = new LinkedList<DBColumn>();
+		List<Column> columns = new LinkedList<Column>();
 		
 		try {
 			stmt = conn.prepareStatement("select column_name, data_type from information_schema.columns where table_name=?");
@@ -147,7 +147,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 			ResultSet cur = stmt.executeQuery();
 			
 			while(cur.next()){
-				DBColumn column = new DBColumn(cur.getString("column_name"), cur.getString("data_type"), false, false);
+				Column column = new Column(cur.getString("column_name"), cur.getString("data_type"), false, false);
 				columns.add(column);
 			}
 			
@@ -159,7 +159,7 @@ public class TablesDatabaseRepository implements TablesRepository {
 		return columns;
 	}
 	
-	private String getQueryForTableCreation(SingleTable table) {
+	private String getQueryForTableCreation(Table table) {
 		StringBuilder query = new StringBuilder();
 		
 		query.append("CREATE TABLE ");
@@ -169,11 +169,11 @@ public class TablesDatabaseRepository implements TablesRepository {
 		StringBuilder primaryKeys = new StringBuilder();
 		primaryKeys.append(",PRIMARY KEY(");
 		
-		List<DBColumn> columns = table.getColumns();
+		List<Column> columns = table.getColumns();
 		
 		int i = 1;
 		boolean thereIsAPrimaryKey = false;
-		for(DBColumn column : columns) {
+		for(Column column : columns) {
 			query.append(column.getName());
 			query.append(" ");
 			query.append(column.getType());
