@@ -1,22 +1,22 @@
-package olap.services.impl;
+package ar.edu.itba.olap.services.impl;
 
 import java.util.List;
 
-import olap.db.DBColumn;
-import olap.db.SingleTable;
-import olap.repository.TablesRepository;
-import olap.repository.impl.TablesDatabaseRepository;
-import olap.services.TablesServices;
+import ar.edu.itba.olap.dao.TablesDAO;
+import ar.edu.itba.olap.dao.impl.DatabaseTablesDAO;
+import ar.edu.itba.olap.domain.Column;
+import ar.edu.itba.olap.domain.Table;
+import ar.edu.itba.olap.services.TablesServices;
 
 public class TablesServicesImpl implements TablesServices {
 
 	private static TablesServices instance;
-	private static TablesRepository tablesDAO;
+	private static TablesDAO tablesDAO;
 	
 	public static synchronized TablesServices getInstance(){
 		if(instance == null){
 			instance = new TablesServicesImpl();
-			tablesDAO = TablesDatabaseRepository.getInstance();
+			tablesDAO = DatabaseTablesDAO.getInstance();
 		}
 		return instance;
 	}
@@ -66,7 +66,7 @@ public class TablesServicesImpl implements TablesServices {
 	}
 
 	@Override
-	public void createTable(SingleTable table) {
+	public void createTable(Table table) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -83,7 +83,7 @@ public class TablesServicesImpl implements TablesServices {
 	}
 	
 	@Override
-	public List<DBColumn> getTableColmns(String tableName) {
+	public List<Column> getTableColmns(String tableName) {
 		return tablesDAO.getTableColums(tableName);
 	}
 }

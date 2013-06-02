@@ -1,4 +1,4 @@
-package olap.web;
+package ar.edu.itba.olap.web;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -9,15 +9,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import olap.api.SpatialOlapApi;
-import olap.api.SpatialOlapApiSingletonImpl;
-import olap.converter.MultiDimConverter;
-import olap.converter.MultiDimConverterDummy;
-import olap.db.DBColumn;
-import olap.db.SingleTable;
-import olap.model.MultiDim;
-import olap.repository.TablesRepository;
-import olap.repository.impl.TablesDatabaseRepository;
+import ar.edu.itba.olap.dao.TablesDAO;
+import ar.edu.itba.olap.dao.impl.DatabaseTablesDAO;
+import ar.edu.itba.olap.domain.Api;
+import ar.edu.itba.olap.domain.ApiImpl;
+import ar.edu.itba.olap.domain.Column;
+import ar.edu.itba.olap.domain.MultiDim;
+import ar.edu.itba.olap.domain.MultiDimToTablesDictionary;
+import ar.edu.itba.olap.domain.MultiDimToTablesDictionaryDummy;
+import ar.edu.itba.olap.domain.Table;
 
 @SuppressWarnings("serial")
 public class CreateAutomaticOutput extends HttpServlet{
@@ -27,24 +27,24 @@ public class CreateAutomaticOutput extends HttpServlet{
 	}
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		TablesRepository tablesDAO = TablesDatabaseRepository.getInstance();
+		TablesDAO tablesDAO = DatabaseTablesDAO.getInstance();
 		
-		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
+		Api api = ApiImpl.getInstance();
 		
 		MultiDim multidim = api.getMultiDim("input.xml");
-		List<DBColumn> multidimColumns = multidim.getColumns();
+		List<Column> multidimColumns = multidim.getColumns();
 		
-		List<MultiDimConverter> columnsInTable = new LinkedList<MultiDimConverter>();
+		List<MultiDimToTablesDictionary> columnsInTable = new LinkedList<MultiDimToTablesDictionary>();
 		
-		for(DBColumn multidimColumn : multidimColumns) {
-			MultiDimConverterDummy dic = new MultiDimConverterDummy(multidimColumn.getName());
+		for(Column multidimColumn : multidimColumns) {
+			MultiDimToTablesDictionaryDummy dic = new MultiDimToTablesDictionaryDummy(multidimColumn.getName());
 			columnsInTable.add(dic);
 		}
 		
 		req.setAttribute("columnsInTable", columnsInTable);
 		
 		String tableName = multidim.getCubos().get(0).getName();
-		SingleTable table = createTable(tableName, multidimColumns);
+		Table table = createTable(tableName, multidimColumns);
 		
 		tablesDAO.createTable(table);
 		
@@ -58,16 +58,16 @@ public class CreateAutomaticOutput extends HttpServlet{
 		req.getRequestDispatcher("/WEB-INF/jsp/manageSelectedColumns.jsp").forward(req, resp);
 	}
 	
-	private SingleTable createTable(String tableName, List<DBColumn> columns) {
-		List<DBColumn> tableColumns = new LinkedList<DBColumn>();
+	private Table createTable(String tableName, List<Column> columns) {
+		List<Column> tableColumns = new LinkedList<Column>();
 		
-		for(DBColumn column : columns) {
+		for(Column column : columns) {
 			String type = getType(column.getType());
-			DBColumn tableColumn = new DBColumn(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
+			Column tableColumn = new Column(column.getName(), type, column.isPrimaryKey(), column.isNotNull());
 			tableColumns.add(tableColumn);
 		}
 		
-		SingleTable table = new SingleTable(tableName, tableColumns);
+		Table table = new Table(tableName, tableColumns);
 		return table;
 	}
 
