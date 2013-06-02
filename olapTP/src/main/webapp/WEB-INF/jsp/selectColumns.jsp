@@ -3,7 +3,7 @@
 <h2>Select matching columns from table<c:out value="${uniqueTable}" /></h2>
 <p><c:out value="${message}" /></p>
 <table class="table table-hover">
-	<tr><th>C</th><th></th></tr>
+	<tr><th>Multidim</th><th>Column</th></tr>
 	<form action="manageSelectedColumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:forEach items="${multidimColumns}" var="multidimColumn">
@@ -25,7 +25,7 @@
 				</tr>
 			</c:forEach>
 			
-				<input class="btn btn-primary" type="submit" value="Aceptar" />
+				<input class="btn btn-primary" type="submit" value="Submit" />
 		</fieldset>
 	</form>
 </table>

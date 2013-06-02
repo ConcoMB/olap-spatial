@@ -1,4 +1,4 @@
-package olap.exceptions;
+package olap.exception;
 
 @SuppressWarnings("serial")
 public class XmlException extends RuntimeException {

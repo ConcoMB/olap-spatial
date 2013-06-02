@@ -9,7 +9,7 @@ import java.util.List;
 import olap.db.DBColumn;
 import olap.db.DBConnectionHandler;
 import olap.db.SingleTable;
-import olap.exceptions.DBException;
+import olap.exception.DBException;
 import olap.repository.TablesRepository;
 
 public class TablesDatabaseRepository implements TablesRepository {

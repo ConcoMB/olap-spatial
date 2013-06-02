@@ -1,5 +1,6 @@
 package olap.model;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 
 	private String name, type;
 	private int pos;
-	private List<Property> properties = new LinkedList<Property>();
+	private List<Property> properties = new ArrayList<Property>();
 	
 	public Level(String name, int pos){
 		this.name = name;
@@ -54,13 +55,13 @@ public class Level implements Comparator<Level>, Comparable<Level>{
 	}
 	
 	@Override
-	public int compare(Level level1, Level level2) {
-		return level1.getPosition() - level2.getPosition();
+	public int compare(Level a, Level b) {
+		return a.getPosition() - b.getPosition();
 	}
 
 	@Override
-	public int compareTo(Level level) {
-		return this.getPosition() - level.getPosition();
+	public int compareTo(Level other) {
+		return this.getPosition() - other.getPosition();
 	}
 	
 	public List<String>getColumnNames(String dimName){
