@@ -5,7 +5,7 @@
 
 	<servlet>
 		<servlet-name>Index</servlet-name>
-		<servlet-class>ar.edu.itba.olap.web.Index</servlet-class>
+		<servlet-class>olap.web.Index</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Index</servlet-name>
@@ -14,7 +14,7 @@
 	
 	<servlet>
 		<servlet-name>SelectTable</servlet-name>
-		<servlet-class>ar.edu.itba.olap.web.SelectTable</servlet-class>
+		<servlet-class>olap.web.SelectTable</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>SelectTable</servlet-name>
@@ -23,7 +23,7 @@
 	
 	<servlet>
 		<servlet-name>SelectColumns</servlet-name>
-		<servlet-class>ar.edu.itba.olap.web.SelectColumns</servlet-class>
+		<servlet-class>olap.web.SelectColumns</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>SelectColumns</servlet-name>
@@ -32,7 +32,7 @@
 	
 	<servlet>
 		<servlet-name>ManageSelectedColumns</servlet-name>
-		<servlet-class>ar.edu.itba.olap.web.ManageSelectedColumns</servlet-class>
+		<servlet-class>olap.web.ManageSelectedColumns</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ManageSelectedColumns</servlet-name>
@@ -41,7 +41,7 @@
 	
 	<servlet>
 		<servlet-name>CreateAutomaticOutput</servlet-name>
-		<servlet-class>ar.edu.itba.olap.web.CreateAutomaticOutput</servlet-class>
+		<servlet-class>olap.web.CreateAutomaticOutput</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CreateAutomaticOutput</servlet-name>
@@ -50,7 +50,7 @@
 	
 	<filter>
 		<filter-name>ErrorFilter</filter-name>
-		<filter-class>ar.edu.itba.olap.web.filter.ErrorFilter</filter-class>
+		<filter-class>olap.web.filter.ErrorFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>ErrorFilter</filter-name>
