@@ -1,9 +1,9 @@
 <%@ include file="header.jsp"%>
 <div class="well-large well">
-<h2>Select a columns from the table to match multiDim columns <c:out value="${uniqueTable}" /></h2>
+<h2>Select matching columns from table<c:out value="${uniqueTable}" /></h2>
 <p><c:out value="${message}" /></p>
 <table class="table table-hover">
-	<tr><th>C</th><th></th></tr>
+	<tr><th>Multidim</th><th>Column</th></tr>
 	<form action="manageSelectedColumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:forEach items="${multidimColumns}" var="multidimColumn">
@@ -14,13 +14,11 @@
 					<td>
 						<select name="${multidimColumn.name}">
 							<c:forEach items="${columns}" var="column">
-								<c:if test="column.name.equalsIgnoreCase(multidimColumn.name)">
-								<%-- <% selected="selected"%> --%>
-									<script>
-										console.log("true");
-									</script>
+								<c:set var="selected" value=""/>
+								<c:if test="${fn:toLowerCase(column.name) == fn:toLowerCase(multidimColumn.name)}">
+									<c:set var="selected" value="selected"/>
 								</c:if>
-								<option value="${column.name}"><c:out value="${column.name}" />
+								<option value="${column.name}" <c:out value="${selected}"/>><c:out value="${column.name}"/></option>
 							</c:forEach>
 						</select>
 					</td>
