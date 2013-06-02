@@ -1,33 +1,17 @@
-<%@ page contentType="text/html"%>
-<%@ page pageEncoding="iso-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-</head>
-<body>
-<p>El archivo de configuración de la base de datos se encuentra en la carpeta OLAP\WEB-INF\classes y se llama setup.properties, por favor introduzca en él el nombre de usuario, contraseña y url de la base de datos</p>
-<p>El archivo multidim de entrada se debe ubicar en la raíz del servidor y se debe llamar "input.xml"</p>
-<p>El archivo geomondrian de salida lo encontrará en la carpeta raíz del servidor y se llamará "geomondrian.xml"</p>
-
-	<div id="content">
-	<form action="createAutomaticOutput" method="POST">
-		<fieldset id="marcoLogin">
-			<h2>Cree el MDX XML creando la tabla automáticamente en la base de datos proporcionada pulsando el siguiente botón</h2>
-			<td><input type="submit" value="Crear automáticamente" /></td>
-		</fieldset>
-	</form>
-		
-	<form action="selectTable" method="POST">
-		<fieldset id="marcoLogin">
-			<h2>O cree el MDX XML seleccionando la tabla deseada de la base de datos proporcionada en el archivo de configuración</h2>
-			<td><input type="submit" value="Seleccionar tabla" /></td>
-		</fieldset>
+<%@ include file="header.jsp"%>
+	<div class="hero-unit">
+	<form method="POST">
+		<h3>Choose the XML</h3>
+		<div class="fileupload fileupload-new" data-provides="fileupload">
+			<div class="input-append">
+			<div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+			</div>
+		</div>
+		<br>
+		<h2>Create the MDX XML automatically </h2>
+		<td><input formaction="createAutomaticOutput" type="submit" value="Automatic" class="btn btn-primary btn-large" /></td>
+		<h2>Or manually select the tables</h2>
+		<td><input formaction="selectTable" type="submit" value="Manual" class="btn btn-primary btn-large"/></td>
 	</form>
 	</div>
-</body>
-</html>
+<%@ include file="footer.jsp"%>
