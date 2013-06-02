@@ -40,7 +40,6 @@ public class Measure {
 		return agg;
 	}
 
-	
 	public String toString(){
 		return "MEDIDA:\n\t nombre = " + name + "; tipo = " + type + "; agg = " + agg + "\n";
 	}

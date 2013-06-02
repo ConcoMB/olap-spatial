@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import olap.api.SpatialOlapApi;
 import olap.api.SpatialOlapApiSingletonImpl;
 import olap.converter.MultiDimConverter;
-import olap.converter.MultiDimConverterImpl;
 import olap.db.DBColumn;
 import olap.model.MultiDim;
 
@@ -42,7 +41,7 @@ public class ManageSelectedColumns extends HttpServlet {
 		for (DBColumn multidimColumn : multidimColumns) {
 			String columnTableName = (String) req.getParameter(multidimColumn
 					.getName());
-			MultiDimConverter dic = new MultiDimConverterImpl(
+			MultiDimConverter dic = new MultiDimConverter(
 					multidimColumn.getName(), columnTableName);
 			columnsInTable.add(dic);
 		}
@@ -90,10 +89,10 @@ public class ManageSelectedColumns extends HttpServlet {
 			List<MultiDimConverter> converters) {
 		for (MultiDimConverter converter : converters) {
 			for (DBColumn col : cols) {
-				if (converter.multidim().toLowerCase()
+				if (converter.getMultidimName().toLowerCase()
 						.equals(col.getName().toLowerCase())) {
 					for (DBColumn databaseColumn : DBCols) {
-						if (converter.column().toLowerCase()
+						if (converter.getColumnName().toLowerCase()
 								.equals(databaseColumn.getName().toLowerCase())) {
 							if (!equalTypes(col.getType(),
 									databaseColumn.getType())) {

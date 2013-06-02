@@ -14,7 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import olap.converter.MultiDimConverter;
 import olap.model.Dimension;
-import olap.model.DimensionUsage;
+import olap.model.DimensionWrapper;
 import olap.model.Hierarchy;
 import olap.model.Level;
 import olap.model.Measure;
@@ -34,15 +34,15 @@ public class XmlWriter {
 					.newDocumentBuilder().newDocument();
 			Element schema = document.createElement("Schema");
 			schema.setAttribute("name", tableName);
-			for(OlapCube cubo: multidim.getCubos()){
+			for(OlapCube cubo: multidim.getOlapCubes()){
 				Element cuboElement = document.createElement("Cube");
 				cuboElement.setAttribute("name", cubo.getName());
 				Element tableElement = document.createElement("Table");
 				tableElement.setAttribute("name", tableName);
 				cuboElement.appendChild(tableElement);
-				List<DimensionUsage> dimUsages = cubo.getDimensionUsage();
+				List<DimensionWrapper> dimUsages = cubo.getDimensionUsage();
 				for(int i = 0; i < dimUsages.size(); i++){
-					DimensionUsage dimUsage = dimUsages.get(i);
+					DimensionWrapper dimUsage = dimUsages.get(i);
 					Dimension dim = dimUsage.getDimension();
 					Element dimElement = document.createElement("Dimension");
 					dimElement.setAttribute("name", dimUsage.getName());

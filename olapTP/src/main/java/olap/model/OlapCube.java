@@ -11,7 +11,7 @@ public class OlapCube {
 
 	private String name;
 	private List<Measure> measures = new LinkedList<Measure>();
-	private List<DimensionUsage> dimensionUsages = new LinkedList<DimensionUsage>();
+	private List<DimensionWrapper> dimensionUsages = new LinkedList<DimensionWrapper>();
 
 	public OlapCube(String name){
 		this.name = name;
@@ -25,7 +25,7 @@ public class OlapCube {
 		return name;
 	}
 	
-	public void addDimensionUsage(DimensionUsage dim){
+	public void addDimensionUsage(DimensionWrapper dim){
 		dimensionUsages.add(dim);
 	}
 	
@@ -33,13 +33,13 @@ public class OlapCube {
 		return measures;
 	}
 	
-	public List<DimensionUsage> getDimensionUsage(){
+	public List<DimensionWrapper> getDimensionUsage(){
 		return dimensionUsages;
 	}
 
 	public Map<String,Dimension> getColumnNames(){
 		Map<String,Dimension> map = new HashMap<String,Dimension>();
-		for(DimensionUsage d : dimensionUsages){
+		for(DimensionWrapper d : dimensionUsages){
 			map.put(d.getName(),d.getDimension());
 		}
 		return map;
@@ -55,7 +55,7 @@ public class OlapCube {
 	
 	public List<DBColumn> getColumns(){
 		List<DBColumn> columns = new LinkedList<DBColumn>();
-		for(DimensionUsage d: dimensionUsages){
+		for(DimensionWrapper d: dimensionUsages){
 			columns.addAll(d.getColumns());
 		}
 		for(Measure m: measures){
@@ -71,7 +71,7 @@ public class OlapCube {
 			s = s.append(p.toString());
 		}
 		s = s.append("DIMS:\n\t" + "\n");
-		for (DimensionUsage p : dimensionUsages) {
+		for (DimensionWrapper p : dimensionUsages) {
 			s = s.append(p.toString());
 		}
 		return s  + "\n";

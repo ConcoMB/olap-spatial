@@ -45,11 +45,11 @@ public class Hierarchy {
 	}
 
 	public String toString(){
-		String string = "JERARQUIA:\n\tnombre = "+name+ "\n niveles:\n";
-		string = string.concat("levels:" + "\n");
+		StringBuffer s = new StringBuffer("JERARQUIA:\n\tnombre = "+name+ "\n niveles:\n");
+		s = s.append("levels:" + "\n");
 		for (Level p : levels) {
-			string = string.concat(p.toString());
+			s = s.append(p.toString());
 		}
-		return string + "\n";
+		return s + "\n";
 	}
 }

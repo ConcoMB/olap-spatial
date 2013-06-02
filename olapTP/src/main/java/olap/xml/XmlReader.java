@@ -12,7 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import olap.exceptions.XmlException;
 import olap.model.Dimension;
-import olap.model.DimensionUsage;
+import olap.model.DimensionWrapper;
 import olap.model.Hierarchy;
 import olap.model.Level;
 import olap.model.Measure;
@@ -67,9 +67,9 @@ public class XmlReader {
 					multidim.addCubo(cubo);
 				}
 			}
-			for (OlapCube olapCube : multidim.getCubos()) {
+			for (OlapCube olapCube : multidim.getOlapCubes()) {
 				List<Dimension> dims = multidim.getDimensions();
-				for (DimensionUsage dimUsage : olapCube.getDimensionUsage()) {
+				for (DimensionWrapper dimUsage : olapCube.getDimensionUsage()) {
 					dimUsage.setDimension(this.readDimension(dimUsage.getPtr(),
 							dims));
 				}
@@ -168,7 +168,7 @@ public class XmlReader {
 				olapCube.addMeasure(measure);
 			} else if (child.getNodeType() == Node.ELEMENT_NODE
 					&& child.getNodeName().equals("dimension")) {
-				DimensionUsage dimensionUsage = this.readDimensionUsage(child);
+				DimensionWrapper dimensionUsage = this.readDimensionUsage(child);
 				olapCube.addDimensionUsage(dimensionUsage);
 			}
 		}
@@ -194,7 +194,7 @@ public class XmlReader {
 		return new Measure(name, type, agg);
 	}
 
-	public DimensionUsage readDimensionUsage(Node node) {
+	public DimensionWrapper readDimensionUsage(Node node) {
 		String name = null;
 		String ptr = null;
 		Node nodeName = node.getAttributes().getNamedItem("name");
@@ -205,7 +205,7 @@ public class XmlReader {
 		if (nodePtr != null) {
 			ptr = nodePtr.getNodeValue();
 		}
-		DimensionUsage du = new DimensionUsage(name, ptr);
+		DimensionWrapper du = new DimensionWrapper(name, ptr);
 		return du;
 	}
 
