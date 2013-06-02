@@ -1,6 +1,6 @@
 package olap.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import olap.db.DBColumn;
@@ -8,8 +8,8 @@ import olap.db.DBColumn;
 public class Dimension {
 
 	private String name;
-	private List<Hierarchy> hierarchies = new LinkedList<Hierarchy>();
-	private List<Level> levels = new LinkedList<Level>();
+	private List<Hierarchy> hierarchies = new ArrayList<Hierarchy>();
+	private List<Level> levels = new ArrayList<Level>();
 	
 	public Dimension(String name){
 		this.name = name;
@@ -36,7 +36,7 @@ public class Dimension {
 	}
 	
 	public List<String> getColumnNames(String cuboName){
-		List<String> columns = new LinkedList<String>();
+		List<String> columns = new ArrayList<String>();
 		for(Level l: levels){
 			columns.addAll(l.getColumnNames(cuboName));			
 		}
@@ -47,7 +47,7 @@ public class Dimension {
 	}
 	
 	public List<DBColumn> getColumns(String before){
-		List<DBColumn> columns = new LinkedList<DBColumn>();
+		List<DBColumn> columns = new ArrayList<DBColumn>();
 		for(Level l: levels){
 			columns.addAll(l.getCols(before));
 		}

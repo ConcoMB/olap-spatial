@@ -14,17 +14,20 @@
 					<td>
 						<select name="${multidimColumn.name}">
 							<c:forEach items="${columns}" var="column">
-								<c:if test="${column.name.equalsIgnoreCase(multidimColumn.name)}">
-								<% selected="selected"%>
-							</c:if>
-								<option value="${column.name}" <%= selected%>><c:out value="${column.name}" />
+								<c:if test="column.name.equalsIgnoreCase(multidimColumn.name)">
+								<%-- <% selected="selected"%> --%>
+									<script>
+										console.log("true");
+									</script>
+								</c:if>
+								<option value="${column.name}"><c:out value="${column.name}" />
 							</c:forEach>
 						</select>
 					</td>
 				</tr>
 			</c:forEach>
 			
-				<input class="btn btn-primary" type="submit" value="Aceptar" />
+				<input class="btn btn-primary" type="submit" value="Submit" />
 		</fieldset>
 	</form>
 </table>

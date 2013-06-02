@@ -1,6 +1,6 @@
 package olap.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,14 +9,9 @@ import olap.db.DBColumn;
 
 public class MultiDim {
 
-	private List<Dimension> dimensions;
-	private List<OlapCube> olapCubes;
+	private List<Dimension> dimensions = new ArrayList<Dimension>();
+	private List<OlapCube> olapCubes = new ArrayList<OlapCube>();
 	
-	public MultiDim() {
-		this.dimensions = new LinkedList<Dimension>();
-		this.olapCubes = new LinkedList<OlapCube>();
-	}
-
 	public void addDimension(Dimension dim) {
 		dimensions.add(dim);
 	}
@@ -31,7 +26,7 @@ public class MultiDim {
 	}
 
 	public List<DBColumn> getColumns(){
-		List<DBColumn> columns = new LinkedList<DBColumn>();
+		List<DBColumn> columns = new ArrayList<DBColumn>();
 		for(OlapCube c : olapCubes){
 			columns.addAll(c.getColumns());
 		}
@@ -43,11 +38,11 @@ public class MultiDim {
 	}
 
 	public List<String> getMultiDimNames(){
-		List<String> columns = new LinkedList<String>();
+		List<String> columns = new ArrayList<String>();
 		for(OlapCube c: olapCubes){
 			columns.addAll(c.getMeasuresNames());
 			Map<String,Dimension> name = c.getColumnNames();		
-			 List<String> names = new LinkedList<String>();
+			 List<String> names = new ArrayList<String>();
 			for(Entry<String,Dimension> d: name.entrySet()){
 				names.addAll(d.getValue().getColumnNames(c.getName()+"_"+d.getKey()+"_"));
 			}
