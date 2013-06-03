@@ -13,8 +13,8 @@ import olap.api.SpatialOlapApi;
 import olap.api.SpatialOlapApiSingletonImpl;
 import olap.db.DBColumn;
 import olap.model.MultiDim;
-import olap.services.TablesServices;
-import olap.services.impl.TablesServicesImpl;
+import olap.repository.TableRepository;
+import olap.repository.impl.TableDatabaseRepository;
 
 @SuppressWarnings("serial")
 public class SelectColumns extends HttpServlet{
@@ -28,9 +28,9 @@ public class SelectColumns extends HttpServlet{
 		HttpSession session = req.getSession();
 		session.setAttribute("uniqueTable", uniqueTable);
 		
-		TablesServices tablesServices = TablesServicesImpl.getInstance();
+		TableRepository tables = TableDatabaseRepository.getInstance();
 		
-		List<DBColumn> columns = tablesServices.getTableColmns(uniqueTable);
+		List<DBColumn> columns = tables.columns(uniqueTable);
 		session.setAttribute("columns", columns);
 		req.setAttribute("columns", columns);
 		
@@ -39,7 +39,7 @@ public class SelectColumns extends HttpServlet{
 		req.setAttribute("message", "Columnas de la tabla " + uniqueTable);
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
-		MultiDim multidim = api.getMultiDim("input.xml");
+		MultiDim multidim = api.read("input.xml");
 		
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		

@@ -19,13 +19,13 @@ public class SpatialOlapApiSingletonImpl implements SpatialOlapApi {
 	}
 
 	@Override
-	public void generateOutput(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
+	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
 		XmlWriter xmlWriter = new XmlWriter();
 		xmlWriter.write(outputPath, multidimToTables, multidim, tableName);
 	}
 
 	@Override
-	public MultiDim getMultiDim(String filePath) {
+	public MultiDim read(String filePath) {
 		XmlReader xmlReader = new XmlReader();
 		return xmlReader.readMultiDim(filePath);
 	}

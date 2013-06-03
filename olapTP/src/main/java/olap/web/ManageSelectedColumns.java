@@ -49,7 +49,7 @@ public class ManageSelectedColumns extends HttpServlet {
 		req.setAttribute("columnsInTable", columnsInTable);
 		MultiDim multidim = (MultiDim) session.getAttribute("multidim");
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
-		api.generateOutput("geomondrian.xml", columnsInTable, multidim,
+		api.write("geomondrian.xml", columnsInTable, multidim,
 				tableName);
 		String msg = "Listo!! Sin problemas";
 		if (TypeHelper.wrongTypes(multidimColumns, databaseColumns, columnsInTable)) {

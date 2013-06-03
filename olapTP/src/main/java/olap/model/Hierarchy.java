@@ -1,6 +1,6 @@
 package olap.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -29,7 +29,7 @@ public class Hierarchy {
 	}
 	
 	public List<String> getColumnNames(String dimName){
-		List<String> columns = new LinkedList<String>();
+		List<String> columns = new ArrayList<String>();
 		for(Level l: levels){
 			columns.addAll(l.getColumnNames(dimName));			
 		}		
@@ -37,7 +37,7 @@ public class Hierarchy {
 	}
 	
 	public List<DBColumn> getColumns(String before){
-		List<DBColumn> columns = new LinkedList<DBColumn>();
+		List<DBColumn> columns = new ArrayList<DBColumn>();
 		for(Level l: levels){
 			columns.addAll(l.getCols(before));
 		}

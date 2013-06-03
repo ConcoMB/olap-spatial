@@ -8,17 +8,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import olap.services.TablesServices;
-import olap.services.impl.TablesServicesImpl;
+import olap.repository.TableRepository;
+import olap.repository.impl.TableDatabaseRepository;
 
 @SuppressWarnings("serial")
 public class SelectTable extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-		TablesServices tablesServices = TablesServicesImpl.getInstance();
-		List<String> tables = tablesServices.getTables();
-		if(tables.size() > 0) {
-			req.setAttribute("tables", tables);
+		TableRepository tables = TableDatabaseRepository.getInstance();
+		List<String> tableList = tables.get();
+		if(tableList.size() > 0) {
+			req.setAttribute("tables", tableList);
 		} else {
 			req.setAttribute("tables", null);
 		}
