@@ -1,32 +1,33 @@
 package olap.web.command;
 
-
-
 public class DBCredentialsForm {
 
-	
-	private String url_db;
-	private String user_db;
-	private String password_db;
-	
-	public String getUrl_db() {
-		return url_db;
-	}
-	public void setUrl_db(String url_db) {
-		this.url_db = url_db;
-	}
-	public String getUser_db() {
-		return user_db;
-	}
-	public void setUser_db(String user_db) {
-		this.user_db = user_db;
-	}
-	public String getPassword_db() {
-		return password_db;
-	}
-	public void setPassword_db(String password_db) {
-		this.password_db = password_db;
+	private String url;
+	private String user;
+	private String password;
+
+	public String getUrl() {
+		return url;
 	}
 
-	
+	public String getUser() {
+		return user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }

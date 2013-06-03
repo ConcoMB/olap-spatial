@@ -2,17 +2,20 @@
 <%@ page pageEncoding="iso-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="css/chosen.css" />
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/css/chosen.css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
-<script src="js/chosen.jquery.js"></script>
-<script src="js/bootstrap.js"></script>
+<script src="/js/chosen.jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	$("select").chosen();
@@ -24,7 +27,7 @@ $(document).ready(function(){
 	    <div class="navbar-inner">
 	    <a class="brand" href="#">OLAP SingleTable</a>
 	    <ul class="nav">
-	    <li class="active"><a href="/">Home</a></li>
+	    <li class="active"><a href="index">Home</a></li>
 	    </ul>
 	    </div>
 	</div>
