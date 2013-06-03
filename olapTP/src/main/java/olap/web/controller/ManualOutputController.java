@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/manual")
+@RequestMapping("manual")
 public class ManualOutputController {
 
 	@RequestMapping(value = "/selecttable", method = RequestMethod.GET)

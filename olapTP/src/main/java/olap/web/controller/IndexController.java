@@ -18,5 +18,10 @@ public class IndexController {
 		mav.addObject("dbcredentialsform", form);
 		return mav;
 	}
+	
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	protected String home(){
+		return "redirect:index";
+	}
 
 }
