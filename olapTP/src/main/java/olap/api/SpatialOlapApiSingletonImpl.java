@@ -1,11 +1,15 @@
 package olap.api;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import olap.db.MultiDimMapper;
 import olap.model.MultiDim;
 import olap.xml.XmlReader;
 import olap.xml.XmlWriter;
+
+import org.springframework.web.multipart.MultipartFile;
 
 
 public class SpatialOlapApiSingletonImpl implements SpatialOlapApi {
@@ -25,8 +29,18 @@ public class SpatialOlapApiSingletonImpl implements SpatialOlapApi {
 	}
 
 	@Override
-	public MultiDim read(String filePath) {
+	public MultiDim convert(MultipartFile file) {
 		XmlReader xmlReader = new XmlReader();
-		return xmlReader.readMultiDim(filePath);
+		File tmpFile = new File(System.getProperty("java.io.tmpdir")
+				+ System.getProperty("file.separator")
+				+ file.getOriginalFilename());
+		try {
+			file.transferTo(tmpFile);
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return xmlReader.readMultiDim(tmpFile.getAbsolutePath());
 	}
 }

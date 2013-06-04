@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -32,12 +33,12 @@ public class AutomaticOutputController {
 	}
 
 	@RequestMapping(value = "/createAutomaticOutput", method = RequestMethod.POST)
-	protected ModelAndView generateAutomaticOutput(@RequestParam String file, HttpServletRequest request, HttpServletResponse response) {
+	protected ModelAndView generateAutomaticOutput(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
 		TableRepository tablesRepository = TableDatabaseRepository.getInstance();
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
 		
-		MultiDim multidim = api.read("input.xml");
+		MultiDim multidim = api.convert(file);
 		List<DBColumn> multidimColumns = multidim.getColumns();
 		
 		List<MultiDimMapper> columnsInTable = new LinkedList<MultiDimMapper>();

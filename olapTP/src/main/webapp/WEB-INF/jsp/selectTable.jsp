@@ -8,21 +8,20 @@
 				<h3>No databases</h3>
 			</c:if>
 			<c:if test="${tables != null}">
-				<form action="selectColumns" method="POST">
+				<form:form action="selectColumns" method="POST">
 						<table>
 							<tr>
-								<select name="table"><br>
+								<form:select name="table" path="table"><br>
 									<c:forEach items="${tables}" var="table">
 										<option value="${table}"><c:out value="${table}" />
 									</c:forEach>
-								</select>
+								</form:select>
 							</tr>
-							<br/>
 							<tr>
 								<td><input class="btn btn-primary" type="submit" value="Accept" /></td>
 							</tr>
 						</table>
-				</form>
+				</form:form>
 			</c:if>
 			
 		</fieldset>

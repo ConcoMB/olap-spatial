@@ -1,5 +1,7 @@
 package olap.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import olap.web.command.DBCredentialsForm;
 import olap.web.command.UploadXmlForm;
 
@@ -12,37 +14,60 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class IndexController {
 
-	
 	@RequestMapping(value = "index", method = RequestMethod.GET)
 	protected ModelAndView index(DBCredentialsForm form) {
 		ModelAndView mav = new ModelAndView("index");
 		mav.addObject("dbcredentialsform", form);
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "index", method = RequestMethod.POST)
 	protected ModelAndView connect(DBCredentialsForm form) {
 		ModelAndView mav = new ModelAndView("index");
 		mav.addObject("dbcredentialsform", form);
+		boolean flag = false;
+		if (form.getUrl() == null) {
+			flag = true;
+		}
+		if (form.getUser() == null) {
+			flag = true;
+		}
+		if (form.getPassword() == null) {
+			flag = true;
+		}
+
+		if (!flag) {
+			// TODO connect to db and persist connection in the HttpSession
+			mav.setViewName("redirect:upload");
+		}
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	protected String home(){
+	protected String home() {
 		return "redirect:index";
 	}
-	
+
 	@RequestMapping(value = "upload", method = RequestMethod.GET)
-	protected ModelAndView upload(UploadXmlForm form){
+	protected ModelAndView upload(UploadXmlForm form) {
 		ModelAndView mav = new ModelAndView("upload");
-		mav.addObject("uploadXmlForm", form);
+		mav.addObject("uploadxmlform", form);
+
 		return mav;
 	}
 
 	@RequestMapping(value = "upload", method = RequestMethod.POST)
-	protected ModelAndView doUpload(UploadXmlForm form){
+	protected ModelAndView doUpload(UploadXmlForm form,
+			HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("upload");
-		mav.addObject("uploadXmlForm", form);
+		String button = request.getParameter("upload");
+		if (button != null && button.equals("Automatic")) {
+			mav.setViewName("redirect:automatic/createAutomaticOutput");
+			mav.addObject("xml", form.getFile());
+		} else if (button != null && button.equals("Manual")) {
+			mav.setViewName("manual/selectTable");
+		}
+		mav.addObject("uploadxmlform", form);
 		return mav;
 	}
 }
