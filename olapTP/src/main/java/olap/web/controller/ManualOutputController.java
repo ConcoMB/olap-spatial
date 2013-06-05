@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import olap.api.SpatialOlapApi;
 import olap.api.SpatialOlapApiSingletonImpl;
 import olap.db.DBColumn;
+import olap.model.DBUser;
 import olap.model.MultiDim;
 import olap.repository.TableRepository;
 import olap.repository.impl.TableDatabaseRepository;
@@ -24,7 +25,7 @@ public class ManualOutputController {
 
 	@RequestMapping(value = "/selecttable", method = RequestMethod.GET)
 	protected ModelAndView selectTable(HttpServletRequest request) {
-		TableRepository tables = TableDatabaseRepository.getInstance();
+		TableRepository tables = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
 		ModelAndView mav = new ModelAndView("/selectTable");
 		List<String> tableList = tables.get();
 		if(tableList.size() > 0) {
@@ -52,7 +53,7 @@ public class ManualOutputController {
 		session.setAttribute("uniqueTable", uniqueTable);
 		ModelAndView mav = new ModelAndView("selectColumns");
 		
-		TableRepository tables = TableDatabaseRepository.getInstance();
+		TableRepository tables = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
 		
 		List<DBColumn> columns = tables.columns(uniqueTable);
 		session.setAttribute("columns", columns);

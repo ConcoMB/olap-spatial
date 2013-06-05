@@ -27,7 +27,8 @@ $(document).ready(function(){
 	    <div class="navbar-inner">
 	    <a class="brand" href="#">OLAP SingleTable</a>
 	    <ul class="nav">
-	    <li class="active"><a href="index">Home</a></li>
+	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/index')}">class="active"</c:if>><a href="index">Connect</a></li>
+	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/upload')}">class="active"</c:if>><a href="upload">Upload xml</a></li>
 	    </ul>
 	    </div>
 	</div>

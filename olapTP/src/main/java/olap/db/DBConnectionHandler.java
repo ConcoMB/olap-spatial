@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import olap.exception.DBException;
+import olap.model.DBUser;
 
 public class DBConnectionHandler {
 
@@ -14,25 +15,28 @@ public class DBConnectionHandler {
 	private String username, password, connectionString;
 	private Connection connection;
 
-	public static synchronized DBConnectionHandler getInstance() {
+	public static synchronized DBConnectionHandler getInstance(DBUser user) {
 		if (handler == null) {
-			handler = new DBConnectionHandler();
-			handler.load();
+			connect(user);
 		}
 		return handler;
 	}
 
-	private void load() {
+	public static synchronized DBConnectionHandler connect(DBUser user) {
+		handler = new DBConnectionHandler();
 		Properties properties = new Properties();
 		try {
-			properties.load(getClass().getClassLoader().getResourceAsStream(
-					"setup.properties"));
-			username = properties.getProperty("username");
-			password = properties.getProperty("password");
-			connectionString = properties.getProperty("connectionString");
+			properties.load(handler.getClass().getClassLoader()
+					.getResourceAsStream("setup.properties"));
+			handler.username = user.getUsername();
+			handler.password = user.getPassword();
+			handler.connectionString = properties
+					.getProperty("connectionString") + user.getConnectionString();
 		} catch (IOException e) {
 			throw new DBException(e.getMessage());
 		}
+
+		return handler;
 	}
 
 	public Connection get() {

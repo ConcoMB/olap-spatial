@@ -2,6 +2,8 @@ package olap.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import olap.db.DBConnectionHandler;
+import olap.model.DBUser;
 import olap.web.command.DBCredentialsForm;
 import olap.web.command.UploadXmlForm;
 
@@ -22,7 +24,7 @@ public class IndexController {
 	}
 
 	@RequestMapping(value = "index", method = RequestMethod.POST)
-	protected ModelAndView connect(DBCredentialsForm form) {
+	protected ModelAndView connect(HttpServletRequest request, DBCredentialsForm form) {
 		ModelAndView mav = new ModelAndView("index");
 		mav.addObject("dbcredentialsform", form);
 		boolean flag = false;
@@ -37,7 +39,9 @@ public class IndexController {
 		}
 
 		if (!flag) {
-			// TODO connect to db and persist connection in the HttpSession
+			DBUser user = new DBUser(form.getUser(), form.getPassword(), form.getUrl());
+			DBConnectionHandler.getInstance(user);
+			request.getSession().setAttribute("dbuser", user);
 			mav.setViewName("redirect:upload");
 		}
 		return mav;
@@ -62,7 +66,7 @@ public class IndexController {
 		ModelAndView mav = new ModelAndView("upload");
 		String button = request.getParameter("upload");
 		if (button != null && button.equals("Automatic")) {
-			mav.setViewName("redirect:automatic/createAutomaticOutput");
+			mav.setViewName("forward:automatic/createAutomaticOutput");
 			mav.addObject("xml", form.getFile());
 		} else if (button != null && button.equals("Manual")) {
 			mav.setViewName("manual/selectTable");
