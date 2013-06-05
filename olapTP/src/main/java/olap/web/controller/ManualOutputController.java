@@ -12,6 +12,7 @@ import olap.model.DBUser;
 import olap.model.MultiDim;
 import olap.repository.TableRepository;
 import olap.repository.impl.TableDatabaseRepository;
+import olap.web.command.SelectTableForm;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ManualOutputController {
 
 	@RequestMapping(value = "/selecttable", method = RequestMethod.GET)
-	protected ModelAndView selectTable(HttpServletRequest request) {
+	protected ModelAndView selectTable(SelectTableForm form, HttpServletRequest request) {
 		TableRepository tables = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
 		ModelAndView mav = new ModelAndView("/selectTable");
 		List<String> tableList = tables.get();
@@ -34,6 +35,7 @@ public class ManualOutputController {
 			mav.addObject("tables", null);
 		}
 		
+		mav.addObject("selecttableform", form);
 		mav.addObject("message", "Seleccione la tabla sobre la que quiere hacer el MDX");
 		
 		return mav;
@@ -47,11 +49,11 @@ public class ManualOutputController {
 	}
 	
 	@RequestMapping(value = "/selectcolumns", method = RequestMethod.POST)
-	protected ModelAndView selectColumns(HttpServletRequest request) {
-		String uniqueTable = request.getParameter("table");
+	protected ModelAndView selectColumns(SelectTableForm form, HttpServletRequest request) {
+		String uniqueTable = form.getSelection();
 		HttpSession session = request.getSession();
 		session.setAttribute("uniqueTable", uniqueTable);
-		ModelAndView mav = new ModelAndView("selectColumns");
+		ModelAndView mav = new ModelAndView("selectcolumns");
 		
 		TableRepository tables = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
 		

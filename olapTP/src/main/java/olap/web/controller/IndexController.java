@@ -64,14 +64,18 @@ public class IndexController {
 	protected ModelAndView doUpload(UploadXmlForm form,
 			HttpServletRequest request) {
 		ModelAndView mav = new ModelAndView("upload");
+		mav.addObject("uploadxmlform", form);
 		String button = request.getParameter("upload");
+		if( form.getFile().getSize() == 0 ){
+			mav.addObject("file_error", "You shall select a file.");
+			return mav;
+		}
 		if (button != null && button.equals("Automatic")) {
 			mav.setViewName("forward:automatic/createAutomaticOutput");
 			mav.addObject("xml", form.getFile());
 		} else if (button != null && button.equals("Manual")) {
 			mav.setViewName("redirect:manual/selecttable");
 		}
-		mav.addObject("uploadxmlform", form);
 		return mav;
 	}
 }

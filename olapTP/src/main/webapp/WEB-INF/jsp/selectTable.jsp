@@ -2,16 +2,16 @@
 <div class="well well-large">
 <h2>Select the table</h2>
 <p><c:out value="${message}" /></p>
-	<form action="selectColumns" method="POST">
+	<form action="selectcolumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:if test="${tables == null}">
 				<h3>No databases</h3>
 			</c:if>
 			<c:if test="${tables != null}">
-				<form:form action="selectColumns" method="POST">
+				<form:form name="selecttableform" action="selectcolumns" method="POST" commandName="selecttableform">
 						<table>
 							<tr>
-								<form:select name="table" path="table"><br>
+								<form:select name="table" path="selection"><br>
 									<c:forEach items="${tables}" var="table">
 										<option value="${table}"><c:out value="${table}" />
 									</c:forEach>
