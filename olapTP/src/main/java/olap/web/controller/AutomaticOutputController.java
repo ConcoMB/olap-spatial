@@ -1,5 +1,9 @@
 package olap.web.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +38,7 @@ public class AutomaticOutputController {
 	}
 
 	@RequestMapping(value = "/createAutomaticOutput", method = RequestMethod.POST)
-	protected ModelAndView generateAutomaticOutput(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+	protected void generateAutomaticOutput(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		TableRepository tablesRepository = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
@@ -48,18 +52,23 @@ public class AutomaticOutputController {
 			MultiDimMapper dic = new MultiDimMapper(col.getName(), null);
 			columnsInTable.add(dic);
 		}
-		ModelAndView mav = new ModelAndView("manageSelectedColumns");
-		
-		mav.addObject("columnsInTable", columnsInTable);
 		
 		String tableName = multidim.getOlapCubes().get(0).getName();
 		SingleTable table = createTable(tableName, multidimColumns);
 		
 		tablesRepository.create(table);
 		
-		api.write("geomondrian.xml", columnsInTable, multidim, tableName);
 		
-		return mav;
+	    response.setContentType("data:text/xml;charset=utf-8"); 
+	    response.setHeader("Content-Disposition","attachment; filename=geomondrian.xml");
+	    OutputStream resOs= response.getOutputStream();  
+	    OutputStream buffOs= new BufferedOutputStream(resOs);   
+	    OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
+		
+		api.write(outputwriter, columnsInTable, multidim, tableName);
+		
+		outputwriter.flush();
+		outputwriter.close();
 		
 	}
 	

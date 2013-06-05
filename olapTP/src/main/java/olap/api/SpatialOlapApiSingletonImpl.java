@@ -2,6 +2,7 @@ package olap.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import olap.db.MultiDimMapper;
@@ -23,7 +24,7 @@ public class SpatialOlapApiSingletonImpl implements SpatialOlapApi {
 	}
 
 	@Override
-	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
+	public void write(OutputStreamWriter outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName) {
 		XmlWriter xmlWriter = new XmlWriter();
 		xmlWriter.write(outputPath, multidimToTables, multidim, tableName);
 	}

@@ -1,5 +1,6 @@
 package olap.api;
 
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import olap.db.MultiDimMapper;
@@ -11,5 +12,5 @@ public interface SpatialOlapApi {
 
 	public MultiDim convert(MultipartFile file);
 	
-	public void write(String outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName);
+	public void write(OutputStreamWriter outputPath, List<MultiDimMapper> multidimToTables, MultiDim multidim, String tableName);
 }

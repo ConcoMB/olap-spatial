@@ -1,7 +1,6 @@
 package olap.xml;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -28,7 +27,7 @@ import org.w3c.dom.Element;
 
 public class XmlWriter {
 
-	public void write(String out, List<MultiDimMapper> multidimMappers,
+	public void write(OutputStreamWriter out, List<MultiDimMapper> multidimMappers,
 			MultiDim multiDim, String tableName) {
 		try {
 			Document doc = DocumentBuilderFactory.newInstance()
@@ -43,7 +42,7 @@ public class XmlWriter {
 		}
 	}
 
-	private void write(Document doc, String out) throws Exception {
+	private void write(Document doc, OutputStreamWriter out) throws Exception {
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer transformer;
 		transformer = tf.newTransformer();
@@ -51,9 +50,7 @@ public class XmlWriter {
 		StringWriter writer = new StringWriter();
 		transformer.transform(new DOMSource(doc), new StreamResult(writer));
 		String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
-		FileWriter fw = new FileWriter(new File(out));
-		fw.write(output);
-		fw.close();
+		out.write(output);
 	}
 
 	private void handleOlapCube(Document doc, Element schema,
