@@ -16,5 +16,29 @@
 		<url-pattern>/bin/*</url-pattern>
 	</servlet-mapping>
 
-	
+	<filter>
+		<filter-name>ErrorFilter</filter-name>
+		<filter-class>olap.web.filter.ErrorFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ErrorFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>ConnectedFilter</filter-name>
+		<filter-class>olap.web.filter.ConnectedFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ConnectedFilter</filter-name>
+		<url-pattern>/bin/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>RestrictedFilter</filter-name>
+		<filter-class>olap.web.filter.RestrictedFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>RestrictedFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 </web-app>

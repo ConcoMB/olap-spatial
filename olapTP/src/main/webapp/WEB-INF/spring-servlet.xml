@@ -13,5 +13,4 @@
 	<!-- Beans relacionados con Spring MVC -->
 	<import resource="classpath:mvc-context.xml" />
 	
-
 </beans>

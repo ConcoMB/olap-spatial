@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
-public class ErrorFilter extends OncePerRequestFilter {
+public class RestrictedFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
-					throws ServletException, IOException {
-		try{
+			throws ServletException, IOException {
+		System.out.println(request.getContextPath());
+		System.out.println(request.getRequestURI());
+		if (request.getRequestURI().matches(".*/bin.*") || request.getRequestURI().matches(".*/css.*") || request.getRequestURI().matches(".*/imgs.*")) {
 			filterChain.doFilter(request, response);
-		}catch(Exception e){
-			//request.setAttribute("error_message", "Ha ocurrido un error");
-			//request.setAttribute("errorStackTrace", e.toString());
-			response.sendRedirect("/bin/error/view?error_message=Ha ocurrido un error&errorStackTrace="+e.toString());
+		} else {
+			response.sendRedirect("/bin/index");
 		}
 	}
 

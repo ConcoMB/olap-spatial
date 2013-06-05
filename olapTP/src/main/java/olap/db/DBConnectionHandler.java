@@ -17,7 +17,10 @@ public class DBConnectionHandler {
 
 	public static synchronized DBConnectionHandler getInstance(DBUser user) {
 		if (handler == null) {
-			connect(user);
+			if( !(user.getConnectionString() != null && user.getUsername() != null && user.getPassword() != null) ){
+				throw new RuntimeException("You shouldn't be here");
+			}
+			connect(user);			
 		}
 		return handler;
 	}

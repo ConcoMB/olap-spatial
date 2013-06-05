@@ -69,7 +69,7 @@ public class IndexController {
 			mav.setViewName("forward:automatic/createAutomaticOutput");
 			mav.addObject("xml", form.getFile());
 		} else if (button != null && button.equals("Manual")) {
-			mav.setViewName("manual/selectTable");
+			mav.setViewName("redirect:manual/selecttable");
 		}
 		mav.addObject("uploadxmlform", form);
 		return mav;
