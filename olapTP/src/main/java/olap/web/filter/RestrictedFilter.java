@@ -17,9 +17,7 @@ public class RestrictedFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		System.out.println(request.getContextPath());
-		System.out.println(request.getRequestURI());
-		if (request.getRequestURI().matches(".*/bin.*") || request.getRequestURI().matches(".*/css.*") || request.getRequestURI().matches(".*/imgs.*")) {
+		if (request.getRequestURI().matches(".*/bin.*") || request.getRequestURI().matches(".*/css.*") || request.getRequestURI().matches(".*/imgs.*") || request.getRequestURI().matches(".*/js.*")) {
 			filterChain.doFilter(request, response);
 		} else {
 			response.sendRedirect("/bin/index");
