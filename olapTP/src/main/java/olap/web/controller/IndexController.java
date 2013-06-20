@@ -40,7 +40,10 @@ public class IndexController {
 
 		if (!flag) {
 			DBUser user = new DBUser(form.getUser(), form.getPassword(), form.getUrl());
-			DBConnectionHandler.getInstance(user);
+			DBConnectionHandler.makeInstance(user);
+			DBConnectionHandler handler = DBConnectionHandler.getInstance();
+			handler.get();
+			handler.close();
 			request.getSession().setAttribute("dbuser", user);
 			mav.setViewName("redirect:upload");
 		}
@@ -70,9 +73,10 @@ public class IndexController {
 			mav.addObject("file_error", "You shall select a file.");
 			return mav;
 		}
+		request.getSession().setAttribute("xml", form.getFile());
+		mav.addObject("xml", form.getFile());
 		if (button != null && button.equals("Automatic")) {
 			mav.setViewName("forward:automatic/createAutomaticOutput");
-			mav.addObject("xml", form.getFile());
 		} else if (button != null && button.equals("Manual")) {
 			mav.setViewName("redirect:manual/selecttable");
 		}

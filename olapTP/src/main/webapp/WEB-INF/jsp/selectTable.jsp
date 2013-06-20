@@ -2,7 +2,7 @@
 <div class="well well-large">
 <h2>Select the table</h2>
 <p><c:out value="${message}" /></p>
-	<form action="selectcolumns" method="POST">
+	<form:form action="selectcolumns" method="POST">
 		<fieldset id="marcoLogin">
 			<c:if test="${tables == null}">
 				<h3>No databases</h3>
@@ -25,6 +25,6 @@
 			</c:if>
 			
 		</fieldset>
-	</form>
+	</form:form>
 </div>
 <%@ include file="footer.jsp"%>

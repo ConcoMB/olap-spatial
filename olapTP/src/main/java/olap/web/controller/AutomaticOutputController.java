@@ -15,7 +15,6 @@ import olap.api.SpatialOlapApiSingletonImpl;
 import olap.db.DBColumn;
 import olap.db.MultiDimMapper;
 import olap.db.SingleTable;
-import olap.model.DBUser;
 import olap.model.MultiDim;
 import olap.model.TypeHelper;
 import olap.repository.TableRepository;
@@ -38,7 +37,7 @@ public class AutomaticOutputController {
 
 	@RequestMapping(value = "/createAutomaticOutput", method = RequestMethod.POST)
 	protected void generateAutomaticOutput(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		TableRepository tablesRepository = TableDatabaseRepository.getInstance((DBUser)request.getSession().getAttribute("dbuser"));
+		TableRepository tablesRepository = TableDatabaseRepository.getInstance();
 		
 		SpatialOlapApi api = SpatialOlapApiSingletonImpl.getInstance();
 		

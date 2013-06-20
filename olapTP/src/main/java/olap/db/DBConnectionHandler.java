@@ -14,18 +14,22 @@ public class DBConnectionHandler {
 	private static DBConnectionHandler handler;
 	private String username, password, connectionString;
 	private Connection connection;
-
-	public static synchronized DBConnectionHandler getInstance(DBUser user) {
-		if (handler == null) {
-			if( !(user.getConnectionString() != null && user.getUsername() != null && user.getPassword() != null) ){
-				throw new RuntimeException("You shouldn't be here");
-			}
-			connect(user);			
+	
+	public static synchronized void makeInstance(DBUser user){
+		if( !(user.getConnectionString() != null && user.getUsername() != null && user.getPassword() != null) ){
+			throw new RuntimeException("You shouldn't be here");
 		}
+		connect(user);	
+	}
+	
+	public static synchronized DBConnectionHandler getInstance() {
+		if ( handler == null) {
+				throw new RuntimeException("Not instantiated");
+			}
 		return handler;
 	}
 
-	public static synchronized DBConnectionHandler connect(DBUser user) {
+	private static synchronized DBConnectionHandler connect(DBUser user) {
 		handler = new DBConnectionHandler();
 		Properties properties = new Properties();
 		try {

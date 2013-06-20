@@ -10,19 +10,16 @@ import olap.db.DBColumn;
 import olap.db.DBConnectionHandler;
 import olap.db.SingleTable;
 import olap.exception.DBException;
-import olap.model.DBUser;
 import olap.repository.TableRepository;
 
 public class TableDatabaseRepository implements TableRepository {
 
 	private static TableRepository tablesRepo;
-	private static DBUser dbuser;
 
-	public static synchronized TableRepository getInstance(DBUser user) {
+	public static synchronized TableRepository getInstance() {
 		if (tablesRepo == null){
 			tablesRepo = new TableDatabaseRepository();
 		}
-		dbuser = user;
 		return tablesRepo;
 	}
 
@@ -149,12 +146,12 @@ public class TableDatabaseRepository implements TableRepository {
 	}
 	
 	private Connection getConnection() {
-		DBConnectionHandler manager = DBConnectionHandler.getInstance(dbuser);
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		return manager.get();
 	}
 
 	private void closeConnection() {
-		DBConnectionHandler manager = DBConnectionHandler.getInstance(dbuser);
+		DBConnectionHandler manager = DBConnectionHandler.getInstance();
 		manager.close();
 	}
 }
