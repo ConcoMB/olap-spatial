@@ -3,7 +3,7 @@ package olap.web.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import olap.db.DBConnectionHandler;
-import olap.model.DBUser;
+import olap.db.DBUser;
 import olap.web.command.DBCredentialsForm;
 import olap.web.command.UploadXmlForm;
 
@@ -39,12 +39,17 @@ public class IndexController {
 		}
 
 		if (!flag) {
+			try{
 			DBUser user = new DBUser(form.getUser(), form.getPassword(), form.getUrl());
 			DBConnectionHandler.makeInstance(user);
 			DBConnectionHandler handler = DBConnectionHandler.getInstance();
 			handler.get();
 			handler.close();
 			request.getSession().setAttribute("dbuser", user);
+			}catch (Exception e) {
+				mav.addObject("connectionError",e.toString());
+				return mav;
+			}
 			mav.setViewName("redirect:upload");
 		}
 		return mav;
@@ -52,7 +57,7 @@ public class IndexController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	protected String home() {
-		return "redirect:index";
+		return "redirect:bin/index";
 	}
 
 	@RequestMapping(value = "upload", method = RequestMethod.GET)

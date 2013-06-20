@@ -22,7 +22,7 @@ public class ErrorFilter extends OncePerRequestFilter {
 		}catch(Exception e){
 			//request.setAttribute("error_message", "Ha ocurrido un error");
 			//request.setAttribute("errorStackTrace", e.toString());
-			response.sendRedirect("/bin/error/view?error_message=Ha ocurrido un error&errorStackTrace="+e.toString());
+			response.sendRedirect("/olap-spatial/bin/error/view?error_message=Ha ocurrido un error&errorStackTrace="+e.toString());
 		}
 	}
 

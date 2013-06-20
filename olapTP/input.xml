@@ -31,7 +31,7 @@
 				<property ID="true" type="string">
 					nombre
 				</property>
-				<property type="geometry"> the_geom
+				<property type="numeric"> the_geom
 				</property>
 			</level>
 			<level name="Ciudad" pos="1">

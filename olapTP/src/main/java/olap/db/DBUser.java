@@ -1,4 +1,4 @@
-package olap.model;
+package olap.db;
 
 public class DBUser {
 

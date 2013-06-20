@@ -30,11 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("automatic")
 public class AutomaticOutputController {
 
-	@RequestMapping(value = "/createAutomaticOutput", method = RequestMethod.GET)
-	protected String automatic() {
-		return "manageSelectedColumns";
-	}
-
 	@RequestMapping(value = "/createAutomaticOutput", method = RequestMethod.POST)
 	protected void generateAutomaticOutput(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		TableRepository tablesRepository = TableDatabaseRepository.getInstance();

@@ -62,7 +62,7 @@ public class XmlWriter {
 			Element tableElem = doc.createElement("Table");
 			tableElem.setAttribute("name", tableName);
 			cubeElem.appendChild(tableElem);
-			List<DimensionWrapper> dimWs = olapCube.getDimensionUsage();
+			List<DimensionWrapper> dimWs = olapCube.getDimensionWrappers();
 			handleDimensions(doc, cubeElem, dimWs, multidimMappers);
 			handleMeasures(doc, cubeElem, olapCube, multidimMappers);
 			schema.appendChild(cubeElem);

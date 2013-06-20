@@ -11,7 +11,7 @@ public class OlapCube {
 
 	private String name;
 	private List<Measure> measures = new ArrayList<Measure>();
-	private List<DimensionWrapper> dimensionUsages = new ArrayList<DimensionWrapper>();
+	private List<DimensionWrapper> dimensionWrappers = new ArrayList<DimensionWrapper>();
 
 	public OlapCube(String name){
 		this.name = name;
@@ -25,21 +25,21 @@ public class OlapCube {
 		return name;
 	}
 	
-	public void addDimensionUsage(DimensionWrapper dim){
-		dimensionUsages.add(dim);
+	public void addDimensionWrapper(DimensionWrapper dim){
+		dimensionWrappers.add(dim);
 	}
 	
 	public List<Measure> getMeasures(){
 		return measures;
 	}
 	
-	public List<DimensionWrapper> getDimensionUsage(){
-		return dimensionUsages;
+	public List<DimensionWrapper> getDimensionWrappers(){
+		return dimensionWrappers;
 	}
 
 	public Map<String,Dimension> getColumnNames(){
 		Map<String,Dimension> map = new HashMap<String,Dimension>();
-		for(DimensionWrapper d : dimensionUsages){
+		for(DimensionWrapper d : dimensionWrappers){
 			map.put(d.getName(),d.getDimension());
 		}
 		return map;
@@ -55,7 +55,7 @@ public class OlapCube {
 	
 	public List<DBColumn> getColumns(){
 		List<DBColumn> columns = new ArrayList<DBColumn>();
-		for(DimensionWrapper d: dimensionUsages){
+		for(DimensionWrapper d: dimensionWrappers){
 			columns.addAll(d.getColumns());
 		}
 		for(Measure m: measures){
@@ -71,7 +71,7 @@ public class OlapCube {
 			s = s.append(p.toString());
 		}
 		s = s.append("DIMS:\n\t" + "\n");
-		for (DimensionWrapper p : dimensionUsages) {
+		for (DimensionWrapper p : dimensionWrappers) {
 			s = s.append(p.toString());
 		}
 		return s  + "\n";

@@ -43,7 +43,7 @@ public class XmlReader {
 			}
 			for (OlapCube olapCube : multidim.getOlapCubes()) {
 				List<Dimension> dims = multidim.getDimensions();
-				for (DimensionWrapper dimW : olapCube.getDimensionUsage()) {
+				for (DimensionWrapper dimW : olapCube.getDimensionWrappers()) {
 					dimW.setDimension(this.readDimension(dimW.getPtr(), dims));
 				}
 			}
@@ -122,7 +122,7 @@ public class XmlReader {
 				olapCube.addMeasure(readMeasure(child));
 			} else if (child.getNodeType() == Node.ELEMENT_NODE
 					&& child.getNodeName().equals("dimension")) {
-				olapCube.addDimensionUsage(readDimensionW(child));
+				olapCube.addDimensionWrapper(readDimensionW(child));
 			}
 		}
 		return olapCube;

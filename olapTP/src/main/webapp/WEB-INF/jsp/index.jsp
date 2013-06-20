@@ -1,5 +1,8 @@
 <%@ include file="header.jsp"%>
 <div class="hero-unit">
+	<c:if test="${not empty connectionError}">
+		<div class="control-group error"><label class="control-label">${connectionError}</label></div>
+	</c:if>
 	<form:form name="dbcredentialsform" action="index" method="POST" class="bs-docs-example form-horizontal" commandName="dbcredentialsform">
 		<div class="control-group">
 			<label class="control-label" for="url">Database URL</label>

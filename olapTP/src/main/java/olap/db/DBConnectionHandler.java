@@ -7,25 +7,25 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import olap.exception.DBException;
-import olap.model.DBUser;
 
 public class DBConnectionHandler {
 
 	private static DBConnectionHandler handler;
 	private String username, password, connectionString;
 	private Connection connection;
-	
-	public static synchronized void makeInstance(DBUser user){
-		if( !(user.getConnectionString() != null && user.getUsername() != null && user.getPassword() != null) ){
+
+	public static synchronized void makeInstance(DBUser user) {
+		if (!(user.getConnectionString() != null && user.getUsername() != null && user
+				.getPassword() != null)) {
 			throw new RuntimeException("You shouldn't be here");
 		}
-		connect(user);	
+		connect(user);
 	}
-	
+
 	public static synchronized DBConnectionHandler getInstance() {
-		if ( handler == null) {
-				throw new RuntimeException("Not instantiated");
-			}
+		if (handler == null) {
+			throw new RuntimeException("Not instantiated");
+		}
 		return handler;
 	}
 
@@ -38,7 +38,8 @@ public class DBConnectionHandler {
 			handler.username = user.getUsername();
 			handler.password = user.getPassword();
 			handler.connectionString = properties
-					.getProperty("connectionString") + user.getConnectionString();
+					.getProperty("connectionString")
+					+ user.getConnectionString();
 		} catch (IOException e) {
 			throw new DBException(e.getMessage());
 		}
@@ -48,11 +49,14 @@ public class DBConnectionHandler {
 
 	public Connection get() {
 		try {
+			Class.forName("org.postgresql.Driver");
 			connection = DriverManager.getConnection(connectionString,
 					username, password);
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			throw new DBException(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		return connection;
 	}

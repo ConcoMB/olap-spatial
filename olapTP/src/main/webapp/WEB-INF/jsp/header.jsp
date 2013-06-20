@@ -10,11 +10,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
-<link rel="stylesheet" type="text/css" href="/css/chosen.css" />
+<link rel="stylesheet" type="text/css" href="/olap-spatial/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/olap-spatial/css/chosen.css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
-<script src="/js/chosen.jquery.js"></script>
-<script src="/js/bootstrap.js"></script>
+<script src="/olap-spatial/js/chosen.jquery.js"></script>
+<script src="/olap-spatial/js/bootstrap.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	$("select").chosen();
@@ -26,8 +26,8 @@ $(document).ready(function(){
 	    <div class="navbar-inner">
 	    <a class="brand" href="#">OLAP SingleTable</a>
 	    <ul class="nav">
-	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/index')}">class="active"</c:if>><a href="/bin/index">Connect</a></li>
-	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/upload')}">class="active"</c:if>><a href="/bin/upload">Upload xml</a></li>
+	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/index')}">class="active"</c:if>><a href="/olap-spatial/bin/index">Connect</a></li>
+	    <li <c:if test="${fn:contains(pageContext.request.requestURI, '/upload')}">class="active"</c:if>><a href="/olap-spatial/bin/upload">Upload xml</a></li>
 	    </ul>
 	    </div>
 	</div>

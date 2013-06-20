@@ -61,7 +61,7 @@ public class ManualOutputController {
 		String uniqueTable = form.getSelection();
 		HttpSession session = request.getSession();
 		session.setAttribute("uniqueTable", uniqueTable);
-		ModelAndView mav = new ModelAndView("selectcolumns");
+		ModelAndView mav = new ModelAndView("selectColumns");
 
 		TableRepository tables = TableDatabaseRepository.getInstance();
 
